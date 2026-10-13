@@ -1,0 +1,30 @@
+\documentclass[11pt]{article}
+\usepackage[paperwidth=19cm,paperheight=25cm,margin=1cm]{geometry}
+\pagestyle{empty}
+\usepackage{amsmath,amssymb,algorithm,algpseudocode}
+\begin{document}
+\begin{minipage}{17cm}
+\begin{algorithm}[H]
+\caption{Compile-Time LoRA Reservation and Runtime Loading}
+\begin{algorithmic}[1]
+\Require Base model $F$, maximum rank $r_{\max}$, adapter $\mathcal{A}$
+\Ensure LoRA-capable model and loaded adapter weights
+\For{each supported linear layer $\ell$}
+    \State Reserve zero-initialized slots $A_{\ell}, B_{\ell}$ with rank $r_{\max}$
+    \State Emit $y_{\ell} \gets W_{\ell}x_{\ell}+B_{\ell}(A_{\ell}x_{\ell})$
+\EndFor
+\State Compile all graphs and record adapter slot metadata
+\State Read rank $r$, target modules and configuration from $\mathcal{A}$
+\If{$r > r_{\max}$ \textbf{or} the adapter is incompatible with $F$}
+    \State \Return \textbf{failure}
+\EndIf
+\State $\Theta \gets \mathrm{ParseSafeTensors}(\mathcal{A})$
+\State Validate tensor names, shapes and the scaling convention
+\State $\Theta_{\mathrm{slot}} \gets \mathrm{PackToReservedLayout}(\Theta,r,r_{\max})$
+\State Synchronize affected inference work according to runtime policy
+\State Copy $\Theta_{\mathrm{slot}}$ to the reserved device weight slots
+\State \Return \textbf{success}
+\end{algorithmic}
+\end{algorithm}
+\end{minipage}
+\end{document}

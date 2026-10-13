@@ -1,0 +1,8 @@
+node_modules/
+.cache/
+.sites-runtime/
+content/
+dist/
+.env
+.env.*
+!.env.example

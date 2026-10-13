@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <clipPath id="moon"><circle cx="32" cy="32" r="28"/></clipPath>
+  </defs>
+  <g clip-path="url(#moon)">
+    <circle cx="32" cy="32" r="28" fill="#222620"/>
+    <circle cx="51" cy="22" r="25" fill="#f8f7f3"/>
+  </g>
+</svg>

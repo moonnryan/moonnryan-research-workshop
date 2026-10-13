@@ -1,0 +1,31 @@
+\documentclass[11pt]{article}
+\usepackage[paperwidth=19cm,paperheight=25cm,margin=1cm]{geometry}
+\pagestyle{empty}
+\usepackage{amsmath,amssymb,algorithm,algpseudocode}
+\begin{document}
+\begin{minipage}{17cm}
+\begin{algorithm}[H]
+\caption{Calibration and Mixed-Precision Selection}
+\begin{algorithmic}[1]
+\Require Model $F$, datasets $D_{\mathrm{cal}},D_{\mathrm{probe}}$, target similarity $\tau$
+\Ensure Thresholds $T$, floating-point layer set $S$, final similarity $c$
+\State $Y_{\mathrm{ref}} \gets F_{\mathrm{float}}(D_{\mathrm{probe}})$
+\State $\{T^{(m)}\} \gets \mathrm{Calibrate}(F,D_{\mathrm{cal}},m \in \{\mathrm{KL},\mathrm{MSE}\})$
+\For{each candidate layer $\ell$}
+    \For{each threshold method $m$}
+        \State $Y \gets \mathrm{ProbeQuantization}(F,\ell,T_{\ell}^{(m)},D_{\mathrm{probe}})$
+        \State $e_{\ell,m} \gets 1-\mathrm{Cosine}(Y,Y_{\mathrm{ref}})$
+    \EndFor
+    \State $m_{\ell}^{*} \gets \arg\min_m e_{\ell,m}$; $T_{\ell} \gets T_{\ell}^{(m_{\ell}^{*})}$
+\EndFor
+\State $S \gets \mathrm{SelectFloatLayers}(\{e_{\ell,m_{\ell}^{*}}\})$
+\State $c \gets \mathrm{EvaluateMixedModel}(F,T,S,D_{\mathrm{probe}})$
+\While{$c < \tau$ \textbf{and} the search budget is not exhausted}
+    \State $S \gets \mathrm{AdjustFloatLayers}(S)$
+    \State $c \gets \mathrm{EvaluateMixedModel}(F,T,S,D_{\mathrm{probe}})$
+\EndWhile
+\State \Return $(T,S,c)$
+\end{algorithmic}
+\end{algorithm}
+\end{minipage}
+\end{document}

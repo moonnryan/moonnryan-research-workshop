@@ -1,0 +1,30 @@
+\documentclass[11pt]{article}
+\usepackage[paperwidth=19cm,paperheight=25cm,margin=1cm]{geometry}
+\pagestyle{empty}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\begin{document}
+\begin{minipage}{17cm}
+\begin{algorithm}[H]
+\caption{Qwen3-VL Subgraph Export and Compilation}
+\begin{algorithmic}[1]
+\Require Model $F$, configuration $C$, target device $d$
+\Ensure Compiled model $B$ and runtime configuration $C_{\mathrm{run}}$
+\State $\mathcal{G} \gets \{\mathrm{ViT}(F),\mathrm{Embedding}(F),\mathrm{LMHead}(F)\}$
+\For{each language layer $\ell$ in $F$}
+    \State $G_{\ell}^{\mathrm{pre}} \gets \mathrm{ExportPrefill}(F_{\ell}, C)$
+    \State $G_{\ell}^{\mathrm{dec}} \gets \mathrm{ExportDecode}(F_{\ell}, C, \mathrm{KV\ interface})$
+    \State $\mathcal{G} \gets \mathcal{G} \cup \{G_{\ell}^{\mathrm{pre}},G_{\ell}^{\mathrm{dec}}\}$
+\EndFor
+\State $\mathcal{B} \gets \varnothing$
+\For{each subgraph $G$ in $\mathcal{G}$}
+    \State $\mathcal{B} \gets \mathcal{B} \cup \{\mathrm{Compile}(G,d,C)\}$
+\EndFor
+\State $B \gets \mathrm{Combine}(\mathcal{B})$
+\State $C_{\mathrm{run}} \gets \mathrm{ExportRuntimeConfig}(C)$
+\State \Return $(B,C_{\mathrm{run}})$
+\end{algorithmic}
+\end{algorithm}
+\end{minipage}
+\end{document}
