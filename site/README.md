@@ -55,4 +55,4 @@ MRW_BASE=/moonnryan-research-workshop/ npm run build
 
 公式采用 MathJax，Mermaid 通过客户端组件渲染，论文式算法直接使用现有 PNG。一级章节标题会进入文章目录，无需修改当前知识库的标题风格。
 
-列表与正文标签链接到 `articles.html?tag=标签`。标签精确匹配，可继续叠加主题和关键词筛选；清除筛选会同步清除 URL 参数。增加或修改文章后，运行 `npm run index` 更新仓库里的时间与硬件索引。
+文章列表每页 10 篇，分页作用于筛选后的结果；切换主题、标签或关键词时回到第一页。列表与正文标签链接到 `articles.html?tag=标签`，标签精确匹配，可叠加主题和关键词；清除筛选会同步清除 URL 参数。增加或修改文章后，运行 `npm run index` 更新仓库里的时间与硬件索引。

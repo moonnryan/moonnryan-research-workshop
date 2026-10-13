@@ -6,7 +6,7 @@
 
 ## 当前内容
 
-按工作时间整理了 2025 年 12 月至 2026 年 10 月的技术积累，共 41 篇：32 篇专题、8 篇教程和 1 份约束矩阵。相近记录合并为同一问题的完整篇章，后续验证与结论修正也归入原文。
+按工作时间整理了 2025 年 12 月至 2026 年 10 月的技术积累，共 40 篇：31 篇专题、8 篇教程和 1 份约束矩阵。相近记录合并为同一问题的完整篇章，后续验证与结论修正也归入原文。
 
 - [按工作时间阅读全部内容](indexes/chronology.md)
 - 按设备阅读：[Sophgo](indexes/hardware/sophgo.md)、[Intel](indexes/hardware/intel.md)、[Ascend](indexes/hardware/ascend.md)、[NVIDIA](indexes/hardware/nvidia.md)、[Qualcomm](indexes/hardware/qualcomm.md)、[Rockchip](indexes/hardware/rockchip.md)
