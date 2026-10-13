@@ -1,6 +1,6 @@
 # Research Workshop · Website
 
-基于 VitePress 的个人知识库与博客界面，包含首页、可筛选文章列表、文章阅读页和关于页。原始 Markdown 保持在上级 `topics/` 与 `assets/tutorial/`；网页源内容按构建模式自动生成，不需要另外维护一份文章。
+基于 VitePress 的个人知识库与博客界面，包含首页、文章列表、阅读页和关于页。原始 Markdown 保持在上级 `topics/`、`assets/tutorial/` 与 `assets/matrices/`，网页内容按构建模式自动生成。
 
 ## 本地预览
 
@@ -29,7 +29,7 @@ npm run check
 npm run preview
 ```
 
-构建输出位于 `dist/`。目前已有文章都是 draft，所以公开构建的文章列表为空；本地和私有审阅模式可查看全部五篇。公开托管前使用公开构建，勿将审阅构建作为公开发布产物。
+构建输出位于 `dist/`。当前内容保留 draft，公开构建只显示通过发布审阅的条目，本地与审阅模式可以查看全部整理稿。公开托管使用公开构建。
 
 GitHub 项目页面等带路径前缀的部署，可以通过 `MRW_BASE` 设置基础路径，例如：
 
@@ -48,8 +48,11 @@ MRW_BASE=/moonnryan-research-workshop/ npm run build
 | `pages/` | 首页、文章列表、关于页的入口 |
 | `scripts/prepare-content.mjs` | 发布筛选、文章索引、Mermaid 转换与资源同步 |
 | `scripts/dev.mjs` | 监听源文章与网站文件，自动更新预览 |
+| `scripts/update-indexes.mjs` | 按工作日期和硬件标签更新仓库导航 |
 | `content/` | 自动生成的网页内容，已忽略；不要在此直接修改文章 |
 
 网站使用现有文件路径生成文章路由，主题来自文章所在目录。YAML 中的标题、标签和更新日期用于列表展示；公开筛选以 `blog` 和 `status` 为准。
 
 公式采用 MathJax，Mermaid 通过客户端组件渲染，论文式算法直接使用现有 PNG。一级章节标题会进入文章目录，无需修改当前知识库的标题风格。
+
+列表与正文标签链接到 `articles.html?tag=标签`。标签精确匹配，可继续叠加主题和关键词筛选；清除筛选会同步清除 URL 参数。增加或修改文章后，运行 `npm run index` 更新仓库里的时间与硬件索引。

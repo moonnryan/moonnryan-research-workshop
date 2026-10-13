@@ -4,7 +4,7 @@ created: 2026-04-21
 updated: 2026-04-21
 status: draft
 blog: true
-tags: [BM1684X, TPU-MLIR, Qwen3.5, W4, 权重重排]
+tags: [Sophgo, BM1684X, TPU-MLIR, Qwen3.5, W4, 权重重排]
 ---
 
 # Sophgo W4 通道对齐问题

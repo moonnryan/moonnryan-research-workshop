@@ -48,6 +48,9 @@ watch(() => route.path, () => { mobileOpen.value = false; updateHeadings() })
             <span>约 {{ frontmatter.minutes }} 分钟</span>
             <span v-if="isPreview && frontmatter.status !== 'ready'" class="draft-label">草稿</span>
           </div>
+          <div v-if="frontmatter.tags?.length" class="article-tags article-page-tags" aria-label="文章标签">
+            <a v-for="tag in frontmatter.tags" :key="tag" :href="withBase('/articles.html?tag=' + encodeURIComponent(tag))">{{ tag }}</a>
+          </div>
           <Content :key="page.relativePath" class="vp-doc article-body" />
           <div class="article-end"><span>读到这里，感谢你的时间。</span><a :href="withBase('/articles.html')">继续阅读 ↗</a></div>
         </article>

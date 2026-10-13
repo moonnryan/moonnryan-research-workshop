@@ -15,6 +15,7 @@ const names = {
   'inference-performance': '推理与性能',
   'engineering-runtime': '工程与运行环境',
   tutorial: '操作教程',
+  matrices: '约束矩阵',
 }
 
 async function files(directory) {
@@ -74,12 +75,12 @@ await copyChanged(path.join(repository, 'assets', 'media'), path.join(destinatio
 
 const articles = []
 const selectedFiles = new Set()
-for (const source of [...await files(path.join(repository, 'topics')), ...await files(path.join(repository, 'assets', 'tutorial'))]) {
+for (const source of [...await files(path.join(repository, 'topics')), ...await files(path.join(repository, 'assets', 'tutorial')), ...await files(path.join(repository, 'assets', 'matrices'))]) {
   const text = await fs.readFile(source, 'utf8')
   const { data, content } = matter(text)
   if (!preview && !(data.blog === true && data.status === 'ready')) continue
   const relative = path.relative(repository, source).split(path.sep).join('/')
-  const category = relative.startsWith('topics/') ? relative.split('/')[1] : 'tutorial'
+  const category = relative.split('/')[1]
   const body = content.replace(/```mermaid\s*\n([\s\S]*?)```/g, (_, diagram) => {
     const encoded = Buffer.from(diagram.trim()).toString('base64')
     return `<MermaidDiagram encoded="${encoded}" />`
@@ -115,7 +116,7 @@ for (const source of [...await files(path.join(repository, 'topics')), ...await 
   }))
 }
 articles.sort((a, b) => b.updated.localeCompare(a.updated) || a.title.localeCompare(b.title, 'zh-CN'))
-for (const directory of ['topics', 'assets/tutorial']) {
+for (const directory of ['topics', 'assets/tutorial', 'assets/matrices']) {
   const target = path.join(destination, directory)
   try {
     for (const file of await files(target)) if (!selectedFiles.has(file)) await fs.rm(file)

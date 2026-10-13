@@ -4,7 +4,7 @@ created: 2026-03-09
 updated: 2026-04-23
 status: draft
 blog: true
-tags: [BM1688, Qwen3-VL, LoRA, BModel, 编译部署]
+tags: [Sophgo, BM1688, Qwen3-VL, LoRA, BModel, 编译部署]
 ---
 
 # Sophgo LoRA 编译预留与动态加载

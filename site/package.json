@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "index": "node scripts/update-indexes.mjs",
     "dev": "node scripts/dev.mjs",
     "build": "node scripts/prepare-content.mjs && vitepress build content",
     "build:preview": "node scripts/prepare-content.mjs --preview && vitepress build content",

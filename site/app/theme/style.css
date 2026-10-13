@@ -95,7 +95,13 @@ a, button, input { -webkit-tap-highlight-color: transparent; }
 .list-article-main { max-width: 790px; }
 .list-article h2 { font-size: 23px; font-weight: 450; line-height: 1.45; letter-spacing: -.4px; margin: 11px 0 11px; }
 .article-tags { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px; color: var(--muted); font-size: 12px; }
-.article-tags span::before { content: '#'; margin-right: 2px; color: #b0b79f; }
+.article-tags a { color: var(--muted); transition: color .18s; }
+.article-tags a::before { content: '#'; margin-right: 2px; color: #b0b79f; }
+.article-tags a:hover { color: var(--accent); }
+.active-tag { display: flex; align-items: center; gap: 7px; margin: 4px 0 0; padding: 10px 12px; width: fit-content; background: #edf0e7; color: var(--muted); border-radius: 4px; font-size: 13px; }
+.active-tag strong { color: var(--accent); font-weight: 500; }
+.active-tag button { border: 0; background: transparent; color: var(--muted); padding: 0 0 0 7px; }
+.active-tag button:hover { color: var(--ink); }
 .list-article-side { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; font-size: 10px; color: #9a9f90; white-space: nowrap; }
 .empty-state { padding: 52px 0 58px; border-top: 1px solid var(--line); color: #626e59; }
 .empty-state > span { font-size: 21px; }
@@ -103,6 +109,7 @@ a, button, input { -webkit-tap-highlight-color: transparent; }
 .article-layout { display: grid; grid-template-columns: minmax(0, 790px) 180px; gap: 56px; padding: 48px 0 75px; align-items: start; }
 .back-link { font-size: 13px; color: var(--accent); }
 .article-meta { margin: 35px 0 15px; display: flex; align-items: center; font-size: 13px; color: var(--muted); }
+.article-page-tags { margin: 0 0 28px; }
 .article-body.vp-doc { font-size: 18px; color: var(--reading-text); }
 .article-body.vp-doc h1 { font-size: 27px; font-weight: 600; line-height: 1.5; letter-spacing: -.5px; margin: 50px 0 20px; }
 .article-body.vp-doc h1:first-of-type { margin: 0 0 28px; font-size: 38px; font-weight: 600; letter-spacing: -.9px; }

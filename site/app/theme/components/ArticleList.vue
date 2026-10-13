@@ -1,15 +1,34 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { withBase } from 'vitepress'
 import { articles, categories, isPreview } from '../content'
 const query = ref('')
 const selected = ref('all')
+const selectedTag = ref('')
+
+function readTag() {
+  selectedTag.value = new URLSearchParams(window.location.search).get('tag') ?? ''
+}
+onMounted(() => {
+  readTag()
+  window.addEventListener('workshop-route-change', readTag)
+})
+onUnmounted(() => window.removeEventListener('workshop-route-change', readTag))
+
 const filtered = computed(() => articles.filter(article => {
   const matchesCategory = selected.value === 'all' || article.category === selected.value
+  const matchesTag = !selectedTag.value || article.tags.includes(selectedTag.value)
   const term = query.value.trim().toLowerCase()
   const searchable = [article.title, article.excerpt, article.categoryName, ...article.tags].join(' ').toLowerCase()
-  return matchesCategory && (!term || searchable.includes(term))
+  return matchesCategory && matchesTag && (!term || searchable.includes(term))
 }))
+
+function clearFilters() {
+  query.value = ''
+  selected.value = 'all'
+  selectedTag.value = ''
+  window.history.replaceState({}, '', withBase('/articles.html'))
+}
 </script>
 
 <template>
@@ -19,12 +38,13 @@ const filtered = computed(() => articles.filter(article => {
       <div class="category-filters" aria-label="按主题筛选"><button :class="{ selected: selected === 'all' }" @click="selected = 'all'">全部</button><button v-for="[key, name] in categories" :key="key" :class="{ selected: selected === key }" @click="selected = key">{{ name }}</button></div>
       <div class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input v-model="query" type="search" aria-label="搜索文章" placeholder="搜索标题或关键词"></div>
     </div>
+    <div v-if="selectedTag" class="active-tag">标签 <strong>#{{ selectedTag }}</strong><button @click="clearFilters">清除</button></div>
     <div v-if="filtered.length" class="all-articles">
-      <a v-for="article in filtered" :key="article.url" class="list-article" :href="withBase(article.url)">
-        <div class="list-article-main"><div class="card-meta"><span>{{ article.categoryName }}</span><span class="meta-dot">·</span><span>约 {{ article.minutes }} 分钟</span><span v-if="isPreview && article.draft" class="draft-label">草稿</span></div><h2>{{ article.title }}</h2><p>{{ article.excerpt }}</p><div class="article-tags"><span v-for="tag in article.tags.slice(0, 4)" :key="tag">{{ tag }}</span></div></div>
-        <div class="list-article-side"><span>{{ article.updated }}</span><span class="row-arrow" aria-hidden="true">↗</span></div>
-      </a>
+      <article v-for="article in filtered" :key="article.url" class="list-article">
+        <div class="list-article-main"><div class="card-meta"><span>{{ article.categoryName }}</span><span class="meta-dot">·</span><span>约 {{ article.minutes }} 分钟</span><span v-if="isPreview && article.draft" class="draft-label">草稿</span></div><h2><a :href="withBase(article.url)">{{ article.title }}</a></h2><p><a :href="withBase(article.url)">{{ article.excerpt }}</a></p><div class="article-tags"><a v-for="tag in article.tags" :key="tag" :href="withBase('/articles.html?tag=' + encodeURIComponent(tag))">{{ tag }}</a></div></div>
+        <div class="list-article-side"><span>{{ article.updated }}</span><a class="row-arrow" :href="withBase(article.url)" :aria-label="'阅读' + article.title">↗</a></div>
+      </article>
     </div>
-    <div v-else class="empty-state"><span>{{ articles.length ? '没有找到匹配的文章。' : '文章正在整理中。' }}</span><p>{{ articles.length ? '试试其他关键词或主题。' : '完成的记录会陆续出现在这里。' }}</p><button v-if="articles.length" class="text-link" @click="query = ''; selected = 'all'">清除筛选 ↗</button></div>
+    <div v-else class="empty-state"><span>{{ articles.length ? '没有找到匹配的文章。' : '文章正在整理中。' }}</span><p>{{ articles.length ? '试试其他关键词、主题或标签。' : '完成的记录会陆续出现在这里。' }}</p><button v-if="articles.length" class="text-link" @click="clearFilters">清除筛选 ↗</button></div>
   </section>
 </template>

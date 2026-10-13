@@ -4,7 +4,7 @@ created: 2025-12-09
 updated: 2026-02-09
 status: draft
 blog: true
-tags: [BM1684X, YOLOv5, TPU-MLIR, INT8, 校准, 混合精度]
+tags: [Sophgo, BM1684X, YOLOv5, TPU-MLIR, INT8, 校准, 混合精度]
 ---
 
 # Sophgo 校准与混合精度选择

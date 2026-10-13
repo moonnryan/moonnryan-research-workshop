@@ -4,7 +4,7 @@ created: 2025-12-03
 updated: 2026-04-22
 status: draft
 blog: false
-tags: [算能, TPU-MLIR, SAIL, Qwen3-VL, YOLOv5]
+tags: [Sophgo, TPU-MLIR, SAIL, Qwen3-VL, YOLOv5]
 ---
 
 # Sophgo 模型编译部署教程

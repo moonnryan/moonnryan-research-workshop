@@ -8,9 +8,16 @@ import './style.css'
 export default {
   extends: DefaultTheme,
   Layout,
-  enhanceApp({ app }) {
+  enhanceApp({ app, router }) {
     app.component('HomePage', HomePage)
     app.component('ArticleList', ArticleList)
     app.component('MermaidDiagram', MermaidDiagram)
+    const previous = router.onAfterRouteChanged
+    router.onAfterRouteChanged = async (href) => {
+      await previous?.(href)
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('workshop-route-change'))
+      }
+    }
   },
 }
