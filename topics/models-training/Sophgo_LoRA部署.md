@@ -1,7 +1,7 @@
 ---
 title: Sophgo LoRA 编译预留与动态加载
-created: 2026-10-12
-updated: 2026-10-13
+created: 2026-03-09
+updated: 2026-04-23
 status: draft
 blog: true
 tags: [BM1688, Qwen3-VL, LoRA, BModel, 编译部署]

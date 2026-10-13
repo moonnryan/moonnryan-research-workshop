@@ -1,7 +1,7 @@
 ---
 title: Sophgo W4 通道对齐问题
-created: 2026-10-12
-updated: 2026-10-12
+created: 2026-04-21
+updated: 2026-04-21
 status: draft
 blog: true
 tags: [BM1684X, TPU-MLIR, Qwen3.5, W4, 权重重排]
