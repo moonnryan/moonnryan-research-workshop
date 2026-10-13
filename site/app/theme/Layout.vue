@@ -64,7 +64,7 @@ watch(() => route.path, () => { mobileOpen.value = false; updateHeadings() })
     </main>
 
     <footer class="site-footer">
-      <span>Copyright © 2026. mengran.yang.</span>
+      <span>Copyright © 2026. Mengran.Yang.</span>
       <a class="footer-note" href="https://vitepress.dev/" target="_blank" rel="noreferrer">Powered by VitePress ↗</a>
     </footer>
   </div>
