@@ -9,7 +9,7 @@
 | 首次工作 | 更新范围截止 | 类型 | 内容 |
 | --- | --- | --- | --- |
 | 2025-12-03 | 2026-04-22 | 教程 | [Sophgo 模型编译部署教程](../assets/tutorial/Sophgo_模型编译部署教程.md) |
-| 2025-12-09 | 2026-02-09 | 专题 | [Sophgo 校准与混合精度选择](../topics/quantization-accuracy/Sophgo_校准与混合精度.md) |
+| 2025-12-09 | 2026-02-09 | 专题 | [Sophgo INT8 量化与精度调优](../topics/quantization-accuracy/Sophgo_INT8量化.md) |
 | 2025-12-11 | 2026-01-22 | 教程 | [Intel B60 上的 Qwen3-VL vLLM 部署](../assets/tutorial/Intel_B60_vLLM部署教程.md) |
 | 2025-12-15 | 2026-04-17 | 专题 | [Sophgo Qwen3-VL 服务中的状态与并发](../topics/engineering-runtime/Sophgo_Qwen3-VL服务化.md) |
 | 2025-12-24 | 2025-12-26 | 专题 | [Sophgo Qwen3-VL 子图导出与部署边界](../topics/graphs-operators/Sophgo_Qwen3-VL导出与部署.md) |
