@@ -40,11 +40,11 @@ flowchart TB
 
 模型目录应同时包含量化权重、`quant_model_description.json`、模型配置、tokenizer 和 processor。msModelSlim 产物使用 `--quantization ascend` 进入对应加载路径；静态和动态 W8A8 的 scale 粒度、计算方式不同，也需要与运行时实现一致。
 
-曾尝试的 Qwen3-VL-32B AWQ、FP8 包在视觉权重加载阶段出现 `KeyError`，浮点模型则可以运行。这组模型包在对应环境下没有形成可用的量化路径，部署时应换成已适配的产物。AWQ 包的 scale、zero point、权重打包方式也不同于 msModelSlim W8A8，修改启动参数无法完成格式转换。
+vLLM Ascend 不支持 `awq` 量化后端，直接指定 `--quantization awq` 会被 NPU 平台检查拒绝。已有 AWQ 权重不能通过修改启动参数变成 msModelSlim W8A8；两者的 scale、zero point 和权重打包方式不同。对于本文的 Qwen3-VL 部署，应从原始浮点模型重新生成已适配的 W8A8 产物。
 
-还需要检查模型自身的 `quantization_config`。有些名称包含 AWQ 的模型使用 compressed-tensors 包装，强制传入 `--quantization awq` 会与配置冲突。消除解析冲突只是完成加载的前提，后续仍需确认图文输出和连续请求是否正常。
+compressed-tensors 是权重与量化配置的组织格式。vLLM Ascend 对其中部分量化方案有适配，但这不等于支持 AWQ 后端。改配置中的量化名称，或者消除命令行与模型配置的冲突，都不会补出缺失的执行内核。
 
-vLLM Ascend 的量化支持已经扩展到多种方案，官方 Qwen3 Dense 教程包含 W8A8、W4A8 和 W4A4。因此，这里的 W8A8 是 Qwen3-VL 部署的具体选择，不能推广为 910B 只支持一种量化。纯文本模型、MoE 专家层与多模态模型的适配范围需要分别查阅。
+vLLM Ascend 的量化支持已经扩展到多种方案，官方 Qwen3 Dense 教程包含 W8A8、W4A8 和 W4A4。这些位宽组合使用各自适配的量化产物与内核，其中的 4 位权重支持也不能当作 AWQ 支持。纯文本模型、MoE 专家层与多模态模型的适配范围需要分别查阅。
 
 # 三、FP8 加载与计算的区别
 
@@ -89,6 +89,7 @@ msModelSlim 的 W8A8 量化曾在容器中通过，而 conda 环境处理视觉�
 # 七、参考资料
 
 - [vLLM Ascend](https://github.com/vllm-project/vllm-ascend)
+- [AWQ 量化后端在 NPU 上不受支持的报错记录](https://github.com/vllm-project/vllm-ascend/issues/6800)
 - [msModelSlim](https://github.com/Ascend/msmodelslim)
 - [vLLM Ascend 硬件支持 FAQ](https://github.com/vllm-project/vllm-ascend/blob/main/docs/source/faqs.md)
 - [vLLM Ascend 量化指南（main 分支）](https://docs.vllm.ai/projects/ascend/en/main/user_guide/feature_guide/quantization.html)
