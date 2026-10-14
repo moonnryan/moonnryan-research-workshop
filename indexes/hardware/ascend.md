@@ -4,7 +4,7 @@
 
 | 日期 | 内容 |
 | --- | --- |
-| 2026-01-05 | [Ascend 910B 服务器验收流程](../../assets/tutorial/Ascend_910B服务器验收教程.md) |
+| 2026-01-05 | [Ascend 服务器硬件与环境信息查询](../../assets/tutorial/Ascend_服务器信息查询.md) |
 | 2026-01-16 | [Ascend 多模态模型的量化与工具链边界](../../topics/quantization-accuracy/Ascend_多模态量化边界.md) |
 | 2026-01-29 | [YOLO 训练、导出与多平台部署](../../assets/tutorial/YOLO_多平台训练部署教程.md) |
 | 2026-02-24 | [Ascend 驱动、固件与 CANN 的安装和维护](../../assets/tutorial/Ascend_设备生命周期.md) |
