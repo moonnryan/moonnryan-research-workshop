@@ -394,7 +394,7 @@ int main()
 进入前文创建的模型编译容器 `BModel_Compile`。下述 Qwen3-VL、YOLOv5 命令均在该容器执行。
 
 ### 2.1 Qwen3-VL 转换
-`llm_convert.py` 读取受支持模型的权重与配置，生成模型相关的 MLIR 子图，逐个编译并合并为 BModel，同时导出运行所需的 config。它将这些步骤封装成一条命令；内部并非把整个模型当作一个不透明文件转换。
+本教程所用 `llm_convert.py` 路径读取受支持模型的权重与配置，按语言层及视觉等模块直接构建 MLIR 子图，再编译并合并为 BModel，同时导出运行所需的 config。另一些 ONNX 导出示例会先生成逐层 ONNX，再通过 `model_transform.py` 转成 MLIR；需要按转换入口和工具版本区分。
 
 支持的主要参数如下:
 
