@@ -729,6 +729,12 @@ make && cp pipeline .. && cd ..
 ![](https://cdn.nlark.com/yuque/0/2026/png/65292342/1770625622088-f4e89d48-fe2a-4aa4-a2e8-1c39f2397ae0.png)
 ![](https://cdn.nlark.com/yuque/0/2026/png/65292342/1770625621846-c13ac20e-f0a5-426f-91cb-334b5acdeb31.png)
 
+**封装为 HTTP 服务**
+
+在这套 SoC 盒子的 Qwen3-VL 服务中，模型只加载一份，请求按顺序使用同一实例。HTTP 入口可以接收多个请求，但设备侧的生成过程串行执行，线程池大小不代表模型并行度。排队需要设置等待上限与超时，测试时区分排队时间和实际生成时间。
+
+每次请求开始前重置会话状态，完整生成结束后再让下一个请求进入。流式响应要让锁覆盖生成器的整个消费过程；如果创建 `StreamingResponse` 后就释放锁，后续请求仍可能清空前一请求正在使用的缓存。多请求测试应检查输出隔离和等待时间，不能据此宣称设备支持并行推理。
+
 ### 3.2 YOLOv5 例程
 + **python**  `sample/YOLOv5/python_demo`不需要编译：  如果使用SoC平台（如SE、SM系列边缘设备），并使用它测试本例程，刷机后在`/opt/sophon/`下已经预装了相应的libsophon、sophon-opencv和sophon-ffmpeg运行库包。还需要交叉编译安装sophon-sail，具体可参考交叉编译安装sophon-sail。  此外还需要配置opencv等其他第三方库：
 
