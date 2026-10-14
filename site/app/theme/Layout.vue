@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, watch, ref } from 'vue'
 import { useData, useRoute, withBase } from 'vitepress'
-import { isPreview } from './content'
 
 const { page, frontmatter } = useData()
 const route = useRoute()
@@ -46,7 +45,6 @@ watch(() => route.path, () => { mobileOpen.value = false; updateHeadings() })
           <div class="article-meta">
             <span>{{ frontmatter.categoryName }}</span><span class="meta-dot">·</span>
             <span>约 {{ frontmatter.minutes }} 分钟</span>
-            <span v-if="isPreview && frontmatter.status !== 'ready'" class="draft-label">草稿</span>
           </div>
           <div v-if="frontmatter.tags?.length" class="article-tags article-page-tags" aria-label="文章标签">
             <a v-for="tag in frontmatter.tags" :key="tag" :href="withBase('/articles.html?tag=' + encodeURIComponent(tag))">{{ tag }}</a>

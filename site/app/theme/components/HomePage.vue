@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress'
-import { articles, isPreview } from '../content'
+import { articles } from '../content'
 const recent = articles.slice(0, 3)
 </script>
 
@@ -20,7 +20,7 @@ const recent = articles.slice(0, 3)
       <div v-if="recent.length" class="recent-list">
         <a v-for="(article, index) in recent" :key="article.url" class="recent-item" :href="withBase(article.url)">
           <span class="article-number">{{ String(index + 1).padStart(2, '0') }}</span>
-          <div class="recent-content"><div class="card-meta"><span>{{ article.categoryName }}</span><span class="meta-dot">·</span><span>{{ article.updated }}</span><span v-if="isPreview && article.draft" class="draft-label">草稿</span></div><h3>{{ article.title }}</h3><p>{{ article.excerpt }}</p></div>
+          <div class="recent-content"><div class="card-meta"><span>{{ article.categoryName }}</span><span class="meta-dot">·</span><span>{{ article.updated }}</span></div><h3>{{ article.title }}</h3><p>{{ article.excerpt }}</p></div>
           <span class="row-arrow" aria-hidden="true">↗</span>
         </a>
       </div>

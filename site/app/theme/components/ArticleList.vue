@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { withBase } from 'vitepress'
-import { articles, categories, isPreview } from '../content'
+import { articles, categories } from '../content'
 const query = ref('')
 const selected = ref('all')
 const selectedTag = ref('')
@@ -56,7 +56,7 @@ function clearFilters() {
     <div v-if="selectedTag" class="active-tag">标签 <strong>#{{ selectedTag }}</strong><button @click="clearFilters">清除</button></div>
     <div v-if="filtered.length" class="all-articles">
       <article v-for="article in pageArticles" :key="article.url" class="list-article">
-        <div class="list-article-main"><div class="card-meta"><span>{{ article.categoryName }}</span><span class="meta-dot">·</span><span>约 {{ article.minutes }} 分钟</span><span v-if="isPreview && article.draft" class="draft-label">草稿</span></div><h2><a :href="withBase(article.url)">{{ article.title }}</a></h2><p><a :href="withBase(article.url)">{{ article.excerpt }}</a></p><div class="article-tags"><a v-for="tag in article.tags" :key="tag" :href="withBase('/articles.html?tag=' + encodeURIComponent(tag))">{{ tag }}</a></div></div>
+        <div class="list-article-main"><div class="card-meta"><span>{{ article.categoryName }}</span><span class="meta-dot">·</span><span>约 {{ article.minutes }} 分钟</span></div><h2><a :href="withBase(article.url)">{{ article.title }}</a></h2><p><a :href="withBase(article.url)">{{ article.excerpt }}</a></p><div class="article-tags"><a v-for="tag in article.tags" :key="tag" :href="withBase('/articles.html?tag=' + encodeURIComponent(tag))">{{ tag }}</a></div></div>
         <div class="list-article-side"><span>{{ article.updated }}</span><a class="row-arrow" :href="withBase(article.url)" :aria-label="'阅读' + article.title">↗</a></div>
       </article>
     </div>
