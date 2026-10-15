@@ -1,5 +1,5 @@
 ---
-title: Sophgo W4 通道对齐问题
+title: Sophgo Qwen3.5 INT4 编译失败分析
 created: 2026-04-21
 updated: 2026-04-21
 status: draft
@@ -7,7 +7,7 @@ blog: true
 tags: [Sophgo, BM1684X, TPU-MLIR, Qwen3.5, W4, 权重重排]
 ---
 
-# Sophgo W4 通道对齐问题
+# Sophgo Qwen3.5 INT4 编译失败分析
 
 
 在 BM1684X 上将 Qwen3.5-2B 转为 W4BF16 时，编译出现 `invalid scale channel`。W4BF16 表示四位权重配合 BF16 激活，是权重量化路径；量化后的 scale、zero point 与权重本身都需要转换为目标后端能够读取的布局。
