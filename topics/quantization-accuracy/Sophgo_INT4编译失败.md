@@ -1,5 +1,5 @@
 ---
-title: Sophgo INT4 编译失败：为什么调整 group size 无效
+title: Sophgo INT4 编译中的 scale 通道对齐限制
 created: 2026-04-21
 updated: 2026-04-21
 status: draft
@@ -7,7 +7,7 @@ blog: true
 tags: [Sophgo, BM1684X, TPU-MLIR, Qwen3.5, W4, 权重重排]
 ---
 
-# Sophgo INT4 编译失败：为什么调整 group size 无效
+# Sophgo INT4 编译中的 scale 通道对齐限制
 
 
 在 BM1684X 上将 Qwen3.5-2B 转为 W4BF16 时，编译出现 `invalid scale channel`。W4BF16 表示四位权重配合 BF16 激活，是权重量化路径；量化后的 scale、zero point 与权重本身都需要转换为目标后端能够读取的布局。

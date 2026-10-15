@@ -10,7 +10,7 @@
 | 2026-01-29 | [YOLO 训练、导出与多平台部署](../../assets/tutorial/YOLO_多平台训练部署教程.md) |
 | 2026-03-09 | [Sophgo LoRA 编译预留与动态加载](../../topics/models-training/Sophgo_LoRA部署.md) |
 | 2026-04-13 | [Sophgo TPU hang 与进程生命周期](../../topics/engineering-runtime/Sophgo_TPU故障归因.md) |
-| 2026-04-21 | [Sophgo INT4 编译失败：为什么调整 group size 无效](../../topics/quantization-accuracy/Sophgo_INT4编译失败.md) |
+| 2026-04-21 | [Sophgo INT4 编译中的 scale 通道对齐限制](../../topics/quantization-accuracy/Sophgo_INT4编译失败.md) |
 | 2026-08-10 | [CV 多平台部署约束矩阵](../../assets/matrices/CV_多平台部署约束.md) |
 
 [返回时间索引](../chronology.md)
