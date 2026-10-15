@@ -43,7 +43,7 @@
 | 首次工作 | 更新范围截止 | 类型 | 内容 |
 | --- | --- | --- | --- |
 | 2026-04-13 | 2026-04-23 | 专题 | [Sophgo TPU hang 与进程生命周期](../topics/engineering-runtime/Sophgo_TPU故障归因.md) |
-| 2026-04-21 | 2026-04-21 | 专题 | [Sophgo Qwen3.5 INT4 编译失败分析](../topics/quantization-accuracy/Sophgo_INT4编译失败.md) |
+| 2026-04-21 | 2026-04-21 | 专题 | [Sophgo INT4 编译失败：为什么调整 group size 无效](../topics/quantization-accuracy/Sophgo_INT4编译失败.md) |
 | 2026-04-24 | 2026-04-27 | 专题 | [NVIDIA TensorRT 的 QDQ 与 INT8 编译边界](../topics/quantization-accuracy/NVIDIA_TensorRT量化边界.md) |
 | 2026-04-28 | 2026-10-08 | 专题 | [多平台模型编译与运行时的契约](../topics/engineering-runtime/多平台_编译与运行时契约.md) |
 
