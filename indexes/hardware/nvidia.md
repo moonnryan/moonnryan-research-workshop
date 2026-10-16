@@ -4,6 +4,8 @@
 
 | 日期 | 内容 |
 | --- | --- |
+| 2026-01-29 | [CV 模型多平台编译与部署](../../assets/tutorial/CV_多平台编译与部署.md) |
+| 2026-01-29 | [CV 模型训练与微调](../../assets/tutorial/CV_训练与微调.md) |
 | 2026-03-30 | [NVIDIA AGX Orin 系统与 TensorRT 环境部署](../../assets/tutorial/NVIDIA_AGX部署与TensorRT.md) |
 | 2026-04-24 | [NVIDIA TensorRT 的 QDQ 与 INT8 编译边界](../../topics/quantization-accuracy/NVIDIA_TensorRT量化边界.md) |
 | 2026-06-23 | [NVIDIA GPU 负载下整机掉电的分层排查](../../topics/engineering-runtime/NVIDIA_GPU掉电排障.md) |

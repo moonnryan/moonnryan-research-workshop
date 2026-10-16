@@ -114,6 +114,24 @@ for (const source of [...await files(path.join(repository, 'topics')), ...await 
     categoryName: article.categoryName,
     minutes: article.minutes,
   }))
+  // Retain old article URLs after a split without duplicating list entries.
+  for (const alias of data.aliases ?? []) {
+    if (typeof alias !== 'string' || !/^\/(?:assets\/(?:tutorial|matrices)|topics\/[a-z-]+)\/[^/]+\.html$/.test(alias)) {
+      throw new Error(`Invalid article alias: ${alias}`)
+    }
+    const aliasFile = path.join(destination, alias.slice(1).replace(/\.html$/, '.md'))
+    selectedFiles.add(aliasFile)
+    await fs.mkdir(path.dirname(aliasFile), { recursive: true })
+    const target = (process.env.MRW_BASE || '/').replace(/\/?$/, '/') + article.url.slice(1)
+    await writeChanged(aliasFile, matter.stringify(`[打开教程：${article.title}](${target})\n`, {
+      title: article.title,
+      layout: false,
+      head: [
+        ['meta', { 'http-equiv': 'refresh', content: `0;url=${target}` }],
+        ['meta', { name: 'robots', content: 'noindex' }],
+      ],
+    }))
+  }
 }
 articles.sort((a, b) => b.updated.localeCompare(a.updated) || a.title.localeCompare(b.title, 'zh-CN'))
 for (const directory of ['topics', 'assets/tutorial', 'assets/matrices']) {
