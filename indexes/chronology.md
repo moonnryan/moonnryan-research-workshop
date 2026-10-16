@@ -51,7 +51,7 @@
 
 | 首次工作 | 更新范围截止 | 类型 | 内容 |
 | --- | --- | --- | --- |
-| 2026-05-19 | 2026-05-29 | 专题 | [Ascend SAM3 子图拆分与动态档位](../topics/graphs-operators/Ascend_SAM3子图与档位.md) |
+| 2026-05-19 | 2026-07-23 | 专题 | [Ascend SAM3 的图文配对与动态编译](../topics/graphs-operators/Ascend_SAM3子图与档位.md) |
 | 2026-05-29 | 2026-08-21 | 专题 | [DEIM 微调中的配置、前处理与权重产物](../topics/models-training/DEIM_微调与产物契约.md) |
 
 ## 2026-06
