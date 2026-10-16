@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { getCurrentInstance, onMounted, ref, watch } from 'vue'
+import { useData } from 'vitepress'
+const { isDark } = useData()
 const props = defineProps<{ encoded: string }>()
 const target = ref<HTMLElement>()
 const error = ref('')
@@ -12,11 +14,15 @@ async function render() {
     const { default: mermaid } = await import('mermaid')
     // SVG text avoids HTML labels inheriting article paragraph styles after measurement.
     await document.fonts.ready
+    const dark = isDark.value
     mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'base', htmlLabels: false,
       flowchart: { useMaxWidth: true, padding: 18 }, themeVariables: {
+      darkMode: dark,
       fontSize: '16px',
-      fontFamily: 'system-ui, sans-serif', primaryColor: '#eeefe9', primaryTextColor: '#263c34',
-      primaryBorderColor: '#aab6aa', lineColor: '#6f8074', secondaryColor: '#f8f7f3',
+      fontFamily: 'system-ui, sans-serif', primaryColor: dark ? '#2b342e' : '#eeefe9', primaryTextColor: dark ? '#e0e6dc' : '#263c34',
+      primaryBorderColor: dark ? '#728475' : '#aab6aa', lineColor: dark ? '#a0b09e' : '#6f8074', secondaryColor: dark ? '#242a25' : '#f8f7f3',
+      tertiaryColor: dark ? '#242a25' : '#f2f4ec',
+      edgeLabelBackground: dark ? '#232923' : '#f8f7f3',
     } })
     const bytes = Uint8Array.from(atob(props.encoded), character => character.charCodeAt(0))
     const code = new TextDecoder().decode(bytes)
@@ -38,7 +44,7 @@ async function render() {
   }
 }
 onMounted(render)
-watch(() => props.encoded, render)
+watch([() => props.encoded, isDark], render)
 </script>
 
 <template><figure class="mermaid-figure"><div v-if="error" role="status">{{ error }}</div><div v-else ref="target" aria-label="流程图"></div></figure></template>

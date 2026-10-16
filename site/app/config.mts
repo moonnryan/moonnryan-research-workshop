@@ -4,6 +4,7 @@ export default defineConfig({
   title: "Moonnryan's Research Workshop",
   description: '研究、实践与思考。',
   lang: 'zh-CN',
+  appearance: true,
   base: process.env.MRW_BASE || '/',
   cleanUrls: false,
   outDir: '../dist',

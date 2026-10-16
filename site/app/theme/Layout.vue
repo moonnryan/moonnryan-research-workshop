@@ -2,7 +2,7 @@
 import { computed, nextTick, onMounted, watch, ref } from 'vue'
 import { useData, useRoute, withBase } from 'vitepress'
 
-const { page, frontmatter } = useData()
+const { page, frontmatter, isDark } = useData()
 const route = useRoute()
 const isArticle = computed(() => frontmatter.value.layout === 'article')
 const isAbout = computed(() => frontmatter.value.layout === 'about')
@@ -18,6 +18,11 @@ async function updateHeadings() {
     }))
 }
 onMounted(updateHeadings)
+onMounted(() => {
+  watch(isDark, dark => {
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#1b1e1b' : '#f8f7f3')
+  }, { immediate: true })
+})
 watch(() => route.path, () => { mobileOpen.value = false; updateHeadings() })
 </script>
 
@@ -35,6 +40,10 @@ watch(() => route.path, () => { mobileOpen.value = false; updateHeadings() })
         <a :class="{ active: isArticle || route.path.includes('/articles') }" :href="withBase('/articles.html')">文章</a>
         <a :class="{ active: isAbout }" :href="withBase('/about.html')">关于</a>
         <a class="github-link" href="https://github.com/moonnryan" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+        <button class="appearance-toggle" type="button" aria-label="切换深浅色模式" title="切换深浅色模式" @click="isDark = !isDark">
+          <svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.5 8.5 0 1 0 20.5 14Z" /></svg>
+          <svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" /></svg>
+        </button>
       </nav>
     </header>
 
