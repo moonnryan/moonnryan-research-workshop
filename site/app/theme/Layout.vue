@@ -28,7 +28,6 @@ watch(() => route.path, () => { mobileOpen.value = false; updateHeadings() })
 
 <template>
   <div class="workshop-shell" :class="{ 'is-home': route.path === withBase('/'), 'is-listing': route.path === withBase('/articles.html') }">
-    <a class="skip-link" href="#main-content">跳到正文</a>
     <header class="site-header">
       <a class="brand" :href="withBase('/')" aria-label="Moonnryan's Research Workshop 首页">
         <span class="brand-mark" aria-hidden="true"></span>

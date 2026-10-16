@@ -89,8 +89,6 @@ a, button, input { -webkit-tap-highlight-color: transparent; }
 .main-nav .github-link { margin-left: 12px; color: var(--ink); }
 .github-link span { margin-left: 5px; }
 .menu-toggle { display: none; border: 0; background: none; }
-.skip-link { position: fixed; top: -80px; left: 24px; background: var(--ink); color: var(--paper); padding: 10px 20px; z-index: 99; }
-.skip-link:focus { top: 10px; }
 .section-eyebrow { font-size: 10px; font-weight: 550; letter-spacing: 2px; color: var(--muted); }
 .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #688065; margin-right: 9px; vertical-align: 1px; }
 .hero { padding: 67px 0 22px 39px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); column-gap: 60px; }
