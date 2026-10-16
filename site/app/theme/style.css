@@ -138,6 +138,7 @@ a, button, input { -webkit-tap-highlight-color: transparent; }
 .mermaid-figure { border: 1px solid #dde3d4; border-radius: 5px; padding: 18px; margin: 26px 0; max-width: 100%; background: #f2f4ec; }
 .mermaid-figure > div { min-width: 0; }
 .mermaid-figure svg { display: block; margin: auto; max-width: 100%; height: auto; }
+.article-body.vp-doc .mermaid-figure p { margin: 0; font-size: inherit; line-height: inherit; color: inherit; }
 .about-layout { max-width: 730px; margin: 70px auto 100px; min-height: 50vh; }
 .about-layout .vp-doc h1 { margin: 22px 0 33px; font-size: 36px; font-weight: 450; }
 .about-layout .vp-doc p { font-size: 18px; line-height: 1.9; color: var(--reading-text); margin: 24px 0; }

@@ -12,7 +12,7 @@
 | 2025-12-09 | 2026-02-09 | 专题 | [Sophgo INT8 量化与精度调优](../topics/quantization-accuracy/Sophgo_INT8量化.md) |
 | 2025-12-11 | 2026-01-22 | 教程 | [Intel B60 上的 Qwen3-VL vLLM 部署](../assets/tutorial/Intel_B60_vLLM部署教程.md) |
 | 2025-12-24 | 2025-12-26 | 专题 | [Sophgo Qwen3-VL 子图导出与部署边界](../topics/graphs-operators/Sophgo_Qwen3-VL导出与部署.md) |
-| 2025-12-29 | 2026-04-27 | 专题 | [CV 视频策略中的时序状态与报警](../topics/engineering-runtime/CV_时序状态与报警.md) |
+| 2025-12-29 | 2026-04-27 | 专题 | [CV 视频场景策略的触发与恢复](../topics/engineering-runtime/CV_策略触发与恢复.md) |
 
 ## 2026-01
 
