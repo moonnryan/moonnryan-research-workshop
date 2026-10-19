@@ -9,6 +9,8 @@
 | 2026-07-23 | [Qualcomm llama.cpp 部署与性能分析](../../assets/tutorial/Qualcomm_llama.cpp部署教程.md) |
 | 2026-07-24 | [Qualcomm QNN 的依赖分层与 ABI](../../topics/engineering-runtime/Qualcomm_QNN依赖与ABI.md) |
 | 2026-08-10 | [CV 多平台部署约束矩阵](../../assets/matrices/CV_多平台部署约束.md) |
+| 2026-09-01 | [Qualcomm GenieX 的 GGUF 与 QAIRT 部署](../../assets/tutorial/Qualcomm_GenieX部署.md) |
+| 2026-09-03 | [Qualcomm MNN 本地编译与模型部署](../../assets/tutorial/Qualcomm_MNN编译与部署.md) |
 | 2026-09-17 | [Qualcomm HTP 上 DEIM 的数值误差与拆图](../../topics/quantization-accuracy/Qualcomm_DEIM精度归因.md) |
 
 [返回时间索引](../chronology.md)

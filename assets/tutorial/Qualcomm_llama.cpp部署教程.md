@@ -4,7 +4,7 @@ created: 2026-07-23
 updated: 2026-09-09
 status: draft
 blog: true
-tags: [Qualcomm, llama.cpp, Hexagon, OpenCL, ABI, MNN, 性能]
+tags: [Qualcomm, llama.cpp, Hexagon, OpenCL, ABI, GGUF, 量化, 性能]
 aliases: [/topics/inference-performance/Qualcomm_llama.cpp性能边界.html]
 ---
 
@@ -137,7 +137,7 @@ MTMD_BACKEND_DEVICE=HTP0 ./bin/llama-server \
 
 分别报告 prompt processing、token generation、TTFT、峰值内存与温度。多模态 TTFT 包含视觉处理，不能与纯文本 prefill token/s 混为一个指标。
 
-# 六、后端放置与性能分析
+# 六、词表、量化与内存限制
 
 HTP prefill 更快而 decode 更慢并不矛盾。prefill 处理多个 token，容易形成较大矩阵计算；decode 每步生成一个 token，更易受权重读取、CPU 回退和同步影响。峰值 TOPS 不能直接换算成生成速度。
 
@@ -175,7 +175,7 @@ $$
 
 这个现象支持输出投影是重要瓶颈，但没有逐算子计时就不能把全部 decode 耗时都归到它。视觉侧也有独立回退：归档 CLIP 图中的两处 IM2COL 和一处 UPSCALE 未在 HTP 执行，形成多个 graph split。
 
-## 6.2 内存分配与 kernel 条件
+## 6.2 OpenCL 分层与单 buffer 限制
 
 OpenCL 的两个故障需要按发生阶段区分。首先是自动分层逻辑：现场 runtime 报告 global memory 为 1 GiB，后端再扣除 1 GiB 预留，得到零可用量。通用加载器按可用量归一化 split 时出现零除，最终表现为 `vector::_M_range_check`，尚未进入模型 kernel 执行。
 
@@ -188,6 +188,8 @@ OpenCL 的两个故障需要按发生阶段区分。首先是自动分层逻辑�
 | 启用 Adreno large-buffer | runtime/驱动分配能力 | 仍报 `CL_INVALID_BUFFER_SIZE (-61)` |
 
 模型总量能放进系统内存，不代表单个设备 buffer 能分配。不能将前一个错误修好，就宣布纯 GPU 模型已经可运行。
+
+## 6.3 量化输出投影与大词表
 
 Hexagon 的 32768 检查则属于另一个后端。上游量化 MatMul 重构改用了 32×32 tiled repack，并由宿主 solver 按 shape 和 VTCM 需求选择 HMX/HVX kernel；归档版本仍保留对大输出投影的保护。它不是公开的“HTP 词表硬件上限”，删除检查也不代表 repack、索引和写回都已支持该形状。
 
@@ -203,6 +205,8 @@ Hexagon 的 32768 检查则属于另一个后端。上游量化 MatMul 重构改
 
 归档 Hexagon 路径中，单路 decode 的矩阵行数常为 $M=1$，部分 HMX 路径要求更大的 M，因此落到另一类实现。增加并行会话可能提升总体吞吐，但同时改变每请求延迟和 K/V 容量，不能解释为单路 decode 自动加速。
 
+## 6.4 单路 decode 与 HTP session
+
 HTP session 是另一个内存约束。单个 Process Domain 的映射空间有限，较大模型可以按该版本接口创建多个 session，再复用 layer split：
 
 ```bash
@@ -215,23 +219,7 @@ GGML_HEXAGON_NDEV=2 ./bin/llama-cli \
 
 多模态再增加一个视觉后端，可能形成 HTP、OpenCL 和 CPU 混合链。应在同图请求中记录视觉阶段与语言阶段，避免纯文本基准掩盖实际多模态请求的放置成本。
 
-## 6.3 MNN 对照的解释
-
-切换框架可以避开 llama.cpp 的特定实现限制，但应先重建正确性基线。QCS9075 上，MNN 3.6.1 的同一 Qwen3.5-2B 导出配置曾在 W4A16-HQQ 下出现重复字符和异常 logits；保持 W4、group 64、对称量化及 W8 视觉编码器，去掉 `--hqq` 后恢复正常。标准 W8 与 FP16 对照也正常。
-
-这个对照将问题缩小到当时的 HQQ 导出与执行组合，不足以判定 HQQ 算法普遍不可用，也不能把 W4 本身当作原因。语义恢复后，再看同一份标准 W4 模型的后端性能。以下为 256×256 单图、84 个 prompt token 的归档结果：
-
-| MNN 后端 | Vision / s | Prefill / token·s⁻¹ | Decode / token·s⁻¹ |
-| --- | ---: | ---: | ---: |
-| CPU W4A16 standard | 0.43 | 78.15 | 33.30 |
-| 直接 Hexagon W4A16 standard | 0.39 | 59.03 | 15.27 |
-| OpenCL W4A16 standard | 27.68 | 3.30 | 4.09 |
-
-三条路径都得到正常图片描述，但这只是样例正确性，不代替数据集评估。Hexagon 路径还有 18 个 FusedLinearAttention 层回退，不能记作全量 NPU 推理。CPU 在该样例中较快，并不证明它对所有模型、上下文和请求分布都占优。
-
-这组 MNN W4 与前面的 llama.cpp Q8 不是统一条件的框架排名：模型资产、量化方式、输入 token 和视觉处理路径均不同。比较的是“模型表示＋框架实现＋硬件路径”，不能只按 W4 比 Q8 更小来预测性能。
-
-## 6.4 测量完整请求
+## 6.5 测量完整请求
 
 $$
 T_{\mathrm{request}}=T_{\mathrm{media}}+T_{\mathrm{vision}}
@@ -242,22 +230,7 @@ $$
 
 生成内容也属于基准的一部分。重复字符、异常 logits、格式截断需要与后端异常分别记录：CPU 与 HTP 同样输出不完整 JSON 时，应先检查模板、输出长度和格式约束；同一量化包在多个后端都异常时，则优先比较浮点与重新导出的模型。只有语言和视觉语义通过，吞吐数字才有比较价值。
 
-# 七、GenieX 与 MNN 改变了哪条执行路径
-
-三个工具都可以在高通设备上提供推理，但输入资产和调用后端并不相同：
-
-| 工具与资产 | 实际路径 | 能否直接沿用 GGUF 配置 |
-| --- | --- | --- |
-| llama.cpp＋GGUF/mmproj | GGML CPU、OpenCL、直接 Hexagon | 使用对应源码版本的参数 |
-| GenieX 导入本地 GGUF | GenieX 的 llama.cpp runtime | 仍需检查实际 runtime 版本与放置 |
-| GenieX＋QAIRT bundle | Qualcomm 预编译模型与 QAIRT NPU runtime | 不是 GGUF，不沿用层卸载与量化选项 |
-| MNN 模型目录 | MNN CPU、OpenCL、直接 Hexagon 或 QNN | 需从源模型导出 MNN 资产 |
-
-因此，将同一 GGUF 导入 GenieX，不等于模型自动变成 QNN 图，也不会仅因换了服务入口就消除 llama.cpp 后端的限制。QAIRT bundle 才是另一条执行路线，需要匹配设备和编译配置；其上下文长度固化在资产中，不能靠 `--nctx` 改成更大的编译窗口。
-
-MNN 也要区分直接 Hexagon 与 QNN：前者调用自己的 DSP 算子库，后者需要 QAIRT/QNN 运行库与相应模型转换。某个模型的导出器可识别，不代表它在两种 NPU 路径上都已经通过。切换框架后仍需验证 tokenizer、视觉处理、生成语义和实际回退，而不是只看后端名称。
-
-# 八、一些反思
+# 七、一些反思
 
 先问哪部分没有实际加速。放置与阶段分开测量后，才能决定修 kernel 支持、调整量化表示还是减少同步边界。
 
@@ -265,13 +238,12 @@ MNN 也要区分直接 Hexagon 与 QNN：前者调用自己的 DSP 算子库，�
 
 源码改动也应对应具体问题：split 零除属于加载器健壮性，单 buffer 失败属于分配能力，输出投影被拒绝属于 kernel 能力声明。放宽一个限制不会连带修好另外两类问题。先用显式分层、独立后端和混合权重建立对照，再决定是否值得维护 kernel 修改。
 
-# 九、参考资料
+GGUF 与 QAIRT 的统一服务入口见 [Qualcomm GenieX 的 GGUF 与 QAIRT 部署](Qualcomm_GenieX部署.md)，自行编译和导出其他模型的路径见 [Qualcomm MNN 本地编译与模型部署](Qualcomm_MNN编译与部署.md)。
+
+# 八、参考资料
 
 - [llama.cpp](https://github.com/ggml-org/llama.cpp)
 - [Snapdragon 后端文档](https://github.com/ggml-org/llama.cpp/tree/master/docs/backend)
 - [Hexagon 量化 MatMul 与 tiled repack 重构](https://github.com/ggml-org/llama.cpp/pull/24954)
 - [Radxa Q900 FastRPC 配置](https://docs.radxa.com/fogwise/airbox-q900/ai-dev/fastrpc-setup)
-- [MNN](https://github.com/alibaba/MNN)
-- [MNN Hexagon 后端](https://github.com/alibaba/MNN/blob/master/source/backend/hexagon/README.md)
-- [GenieX runtime 与命令参数](https://github.com/qualcomm/GenieX/blob/main/docs/en/run/cli/reference.mdx)
 - [OpenCL 设备查询](https://registry.khronos.org/OpenCL/sdk/3.0/docs/man/html/clGetDeviceInfo.html)

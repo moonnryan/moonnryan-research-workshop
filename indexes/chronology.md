@@ -86,6 +86,8 @@
 
 | 首次工作 | 更新范围截止 | 类型 | 内容 |
 | --- | --- | --- | --- |
+| 2026-09-01 | 2026-09-02 | 教程 | [Qualcomm GenieX 的 GGUF 与 QAIRT 部署](../assets/tutorial/Qualcomm_GenieX部署.md) |
+| 2026-09-03 | 2026-09-09 | 教程 | [Qualcomm MNN 本地编译与模型部署](../assets/tutorial/Qualcomm_MNN编译与部署.md) |
 | 2026-09-09 | 2026-09-09 | 专题 | [NVIDIA TensorRT 的 QKV 布局与融合边界](../topics/graphs-operators/NVIDIA_QKV布局与融合.md) |
 | 2026-09-14 | 2026-10-10 | 专题 | [多平台训练的任务、数据与版本契约](../topics/engineering-runtime/多平台_训练任务与版本.md) |
 | 2026-09-17 | 2026-10-08 | 专题 | [Qualcomm HTP 上 DEIM 的数值误差与拆图](../topics/quantization-accuracy/Qualcomm_DEIM精度归因.md) |
