@@ -112,13 +112,7 @@ QCS9075 的归档 QAIRT Qwen3-VL-4B 测试中，平均 TTFT 约 0.638 s，完整
 
 记录性能时同时固定图片尺寸、prompt、生成长度、采样方式、预热与功耗配置。视觉耗时、语言 prefill、decode 和服务总时延分别比较；仅 decode 快，不代表首响应更快，仅首响应快，也不能说明长文本生成更快。
 
-# 六、一些反思
-
-GenieX 统一的是资产管理和调用方式，底层执行机制仍由 runtime 决定。先确认输入资产走哪条路线，再解释参数、错误和性能，可以避免把 GGUF 的问题归到 QAIRT，或期待服务封装自动解决 kernel 限制。
-
-选择专门优化的预编译模型，可以减少后端适配工作；自行编译则能够接入更多自定义模型。两者的取舍最终落在任务质量、设备适配、时延和维护成本上。
-
-# 七、参考资料
+# 六、参考资料
 
 - [Qualcomm GenieX](https://github.com/qualcomm/GenieX)
 - [GenieX CLI 与 runtime 参数](https://github.com/qualcomm/GenieX/blob/main/docs/en/run/cli/reference.mdx)
