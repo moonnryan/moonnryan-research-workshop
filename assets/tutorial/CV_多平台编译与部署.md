@@ -78,6 +78,8 @@ DEIMv2 和 EdgeCrafter 的当前封装固定静态 batch=1 FP16，不能照搬 Y
 
 ## 2.4 Rockchip RKNN
 
+Toolkit2 主机环境、板端 Runtime/Lite2 安装与最小推理流程见 [Rockchip RKNN 环境搭建与板端推理](Rockchip_RKNN环境与推理.md)。先确认这条基础链路，再使用模型转换入口。
+
 ```bash
 bash RKNN_Compile/rknn_compile.sh --model_type yolo \
   --weight_path /srv/export/yolo11s.onnx \

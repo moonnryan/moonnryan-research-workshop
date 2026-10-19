@@ -15,6 +15,7 @@
 - [NVIDIA AGX Orin 系统与 TensorRT 环境部署](../assets/tutorial/NVIDIA_AGX部署与TensorRT.md)
 - [Sophgo 模型编译部署教程](../assets/tutorial/Sophgo_模型编译部署教程.md)
 - [Ascend 服务器环境部署与信息查询](../assets/tutorial/Ascend_服务器环境部署.md)
+- [Rockchip RKNN 环境搭建与板端推理](../assets/tutorial/Rockchip_RKNN环境与推理.md)
 - [CV 多平台部署约束矩阵](../assets/matrices/CV_多平台部署约束.md)
 
 矩阵描述固定版本下的已知接口和限制，模型或工具链更新时重新核对。操作入口存在与板端任务验证通过分别记录。
