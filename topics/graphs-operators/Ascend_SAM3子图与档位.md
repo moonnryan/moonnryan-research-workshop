@@ -43,6 +43,8 @@ image_indices = [0, 0, 1]
 
 单体模型适合建立输出基线；同图多概念时，复制图片到 pair batch 则会重复执行视觉编码。拆图的主要收益来自消除这部分重复计算。
 
+这里的单体导出封装了 HF `Sam3Model.forward` 的五个输入：图像、token、attention mask、框和框标签。它没有点提示输入，不能仅因为原模型支持多种提示，就把导出产物也描述为支持全部接口。同图多概念通过复制图像组成配对 batch 实现；三段拆分则把这份重复从视觉编码前移到了编码之后。
+
 | 子图 | 输入与输出 | 可复用的内容 |
 | --- | --- | --- |
 | image encoder | 图像 $[I,3,1008,1008]$ → 多尺度 FPN 与位置编码 | 同一前处理图像的视觉特征 |
@@ -50,6 +52,17 @@ image_indices = [0, 0, 1]
 | grounding decoder | 按配对组织的视觉、文本特征 → mask、box、score、presence | 每对图文的融合与预测仍需计算 |
 
 $M$ 是本次实际编码的提示词数量。可以直接编码 $P$ 条文本，也可以先对重复文本去重，编码后再按配对顺序组装。文本特征必须连同 mask 一起复用；模型版本、tokenizer、截断长度变化时，缓存也要失效。
+
+输出同样需要按实际导出图定义。当前接口保留候选目标维度，尚未做原图尺寸还原和最终筛选：
+
+| 输出 | 当前导出图的形状 | 含义 |
+| --- | --- | --- |
+| `pred_masks` | $[P,200,288,288]$ | 每个配对的 200 路候选掩码 logits |
+| `pred_boxes` | $[P,200,4]$ | 归一化 `xyxy` 候选框 |
+| `pred_logits` | $[P,200]$ | 各候选的检测 logits |
+| `presence_logits` | $[P,1]$ | 当前图文配对的目标存在性 logits |
+
+输入图像为 1008×1008，并不意味着原始 mask 输出也是这个分辨率。将输出写成每对只有一个 1008×1008 mask，会同时低估候选输出的内存和后处理工作量。后处理还需根据实际缩放、padding 与原图尺寸恢复掩码和坐标。
 
 视觉特征在图文融合前与提示词无关，适合作为缓存边界。融合编码器的输出已经依赖文本，不能只按图片缓存后用于另一个概念。图像缓存则应绑定媒体内容、缩放与归一化方式、模型版本，不能只使用文件名。
 
@@ -78,6 +91,10 @@ pooled = roi_align(features, rois, roi_size)
 这里保留的是张量中的 batch 索引，避免依赖 Python 列表长度。几何编码器内部接收归一化 `cxcywh`，进入 RoIAlign 前转成特征图上的 `xyxy`。同为四个数，坐标含义和尺度不同。
 
 该改写解决了导出中的一个动态 batch 障碍，但索引式 decoder 还保留 `index_select`、几何提示和 RoIAlign。它适合任意配对与框提示，编译时却需要处理更多动态索引和形状关系。
+
+导出产物的组织也是独立问题。单体导出使用 external data，并将权重合并为一个外置数据文件，部署时需与 `.onnx` 一起保留，维持图中记录的相对路径。外置权重用于处理大模型的序列化与分发，不会自动降低执行时的权重或激活内存；拆分子图是否外置，应按各自大小决定。
+
+本次导出使用 opset 15，但 opset 只规定算子的版本语义。是否能在 NPU 上编译，还取决于具体算子的 dtype、输入形状、属性和动态形状传播。算子分析 CSV 适合筛选可疑节点，最终仍需结合 ATC 的首个编译错误和实际执行结果定位。
 
 # 四、用 grid 接口换取更规则的计算图
 
@@ -144,7 +161,26 @@ atc --framework=5 \
 
 `input_shape_range` 是这套 CANN 8.5 环境的可用经验。新版 ATC 文档已将该参数列为弃用选项，升级时应核对新版 `input_shape` 的范围表达方式和运行接口，不把旧命令当作跨版本保证。
 
-ORT CANN EP 则是另一条执行路径。其图模式、单算子模式和允许子图切分的模式有不同的覆盖范围；允许子图切分可能使部分节点落到 CPU。直接 ATC 能转静态 OM，与 CANN EP 在动态输入下失败并不矛盾。选择它作为验证入口时，需要查看实际节点分配与拷贝开销，仅看到 provider 名称包含 CANN 不能证明全图都在 NPU 上执行。
+静态 ATC、ATC multi-batch 和 ORT CANN EP 的结果需要分开记录。静态输入提供了更明确的形状条件，可能使部分 shape 计算、广播和 reshape 在编译期确定；multi-batch 则要求保留下来的中间动态形状也满足其编译规则。将几何框数量固定为 1，仍没有消除单体图的中间动态形状问题。
+
+以下对照来自同一阶段的转换与运行记录，CANN EP 使用 ONNX Runtime 1.24.4：
+
+| 路径 | 已记录结果 | 可以得出的结论 |
+| --- | --- | --- |
+| 单体、静态 ATC、batch=1 | 转换和 benchmark 通过，NPU compute mean 约 160.22 ms | 单体图在固定形状下可以离线部署 |
+| 单体、ATC dynamic batch | `Multi-batch not support middle dynamic shape` | 此图不满足当时 multi-batch 的中间形状约束 |
+| 单体、CANN EP 图模式 | `aclgrphParseONNXFromMem` 失败 | 在线图解析路径没有通过，尚不能据此指定某个算子为根因 |
+| 单体、CANN EP 单算子模式 | geometry 的 `Mul_4` 路径报 `BroadcastToD` 错误 | 故障缩小到该广播执行路径，仍需核对具体形状与类型 |
+| 拆分 image、CANN EP | 图模式失败；单算子模式在 LayerNorm 的 `Sub` 路径报广播错误 | 拆图没有自动解决视觉编码器的在线执行问题 |
+| 拆分 text 与索引式 decoder、CANN EP | 分别跑通 1、2 条文本或配对的动态输入 | 这些子图可以执行，不代表三段完整链路已经通过 |
+
+当时的 CANN EP 测试脚本关闭了 ORT 图优化，显式设置 `force_fp16`，并分别切换 CANN 图模式和单算子模式。上述结果针对这一组图、版本和参数，不能概括为 CANN EP 永远不支持 SAM3，也不能把 `BroadcastToD` 报错直接解释成 ONNX 的 `Mul` 或 `Sub` 普遍不受支持。
+
+ORT CANN EP 是另一条执行路径，其图模式、单算子模式和允许子图切分的模式有不同的覆盖范围；允许子图切分可能使部分节点落到 CPU。选择它作为验证入口时，需要查看实际节点分配与拷贝开销，仅看到 provider 名称包含 CANN 不能证明全图都在 NPU 上执行。
+
+text 和 decoder 的测试还观察到新 shape 首次执行需要较长的在线编译时间，同 shape 重复运行则明显缩短。性能记录应分开保存 Session 创建、新 shape 首请求和预热后的耗时。提前预热已知档位可以减少首请求等待，但不等于支持任意形状而没有额外开销。
+
+如果部署目标只需要固定的小 batch，静态单体 OM 可以保留为更简单的基线。已有记录确认的是 batch=1；为 batch 2、4、8、16 分别编译静态模型仍属于待验证方案。拆分加 grid 的价值在于特征复用和明确的配对组织，不需要把所有场景都改成同一种接口。
 
 精度也应按子图选择。文本编码器曾出现 FP16 数值风险，不能因为图像与 decoder 能用低精度，就把整条链路统一设成 `force_fp16`。先检查各段输出是否有限、与浮点基线的差异，再对掩码、框和最终分数进行比较。
 
@@ -185,10 +221,13 @@ decoder 的 pairs/s 与完整服务的图/s 需要分别统计。完整时延还
 
 图文配对是整条链路最应保持明确的约定。图片特征可以共享，概念可以去重，batch 可以分档，但每一个输出属于哪张图、哪条提示词始终需要可追踪。接口清楚之后，才有条件比较缓存、动态编译和批处理各自带来的收益。
 
+拆分也不自动带来流水线并行。顺序调用三个子图，只改变计算组织；要让不同请求在编码与解码阶段重叠，还需要设备资源、调度和缓冲区的配合。复用减少了多少重复计算，与完整服务加速多少倍，应分别测量。
+
 # 八、参考资料
 
 - [SAM3](https://github.com/facebookresearch/sam3)
 - [Transformers SAM3 接口与特征复用](https://huggingface.co/docs/transformers/model_doc/sam3)
+- [ONNX 外置权重格式](https://onnx.ai/onnx/repo-docs/ExternalData.html)
 - [ONNX Runtime CANN Execution Provider](https://onnxruntime.ai/docs/execution-providers/community-maintained/CANN-ExecutionProvider.html)
 - [ATC 动态维度档位](https://www.hiascend.com/document/detail/zh/canncommercial/80RC3/devaids/devtools/atc/atlasatcparam_16_0020.html)
 - [ATC shape range 与版本变化](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/900/devaids/atctool/atlasatcparam_16_0017.html)
