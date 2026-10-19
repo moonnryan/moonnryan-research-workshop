@@ -123,7 +123,7 @@ for (const source of [...await files(path.join(repository, 'topics')), ...await 
     selectedFiles.add(aliasFile)
     await fs.mkdir(path.dirname(aliasFile), { recursive: true })
     const target = (process.env.MRW_BASE || '/').replace(/\/?$/, '/') + article.url.slice(1)
-    await writeChanged(aliasFile, matter.stringify(`[打开教程：${article.title}](${target})\n`, {
+    await writeChanged(aliasFile, matter.stringify(`[打开文章：${article.title}](${target})\n`, {
       title: article.title,
       layout: false,
       head: [

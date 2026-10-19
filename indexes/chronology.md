@@ -82,7 +82,6 @@
 | 2026-08-10 | 2026-10-08 | 矩阵 | [CV 多平台部署约束矩阵](../assets/matrices/CV_多平台部署约束.md) |
 | 2026-08-11 | 2026-08-12 | 专题 | [RKNN 上 DEIM 的采样语义与部署边界](../topics/graphs-operators/RKNN_DEIM部署边界.md) |
 | 2026-08-12 | 2026-08-12 | 专题 | [Intel B60 的量化模型与优化路径兼容性](../topics/engineering-runtime/Intel_B60量化兼容性.md) |
-| 2026-08-13 | 2026-08-13 | 专题 | [Qualcomm ORT Plugin EP 的注册与错误归因](../topics/engineering-runtime/Qualcomm_ORT插件注册.md) |
 
 ## 2026-09
 
