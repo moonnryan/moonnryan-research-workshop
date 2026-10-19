@@ -135,7 +135,7 @@ InsightFace 的 ONNX 或双模型目录可以交给 `--model_type insightface`�
 
 校准集使用接近部署分布的真实图片，按该后端正式输入规则生成。普通浮点 ONNX 与已经含 Q/DQ 的图采用不同量化入口，不在显式量化图上重复套用隐式校准。
 
-YOLO 单输出可能拼接像素级 boxes 与低幅值 scores。INT8 后要单独检查类别分数是否被量化范围吞没，不能只看整个输出的余弦；必要时使用经过验证的混合精度或分支方案。详见 [YOLO 检测头量化尺度](../../topics/quantization-accuracy/YOLO_检测头量化尺度.md) 与 [Sophgo INT8 量化](../../topics/quantization-accuracy/Sophgo_INT8量化.md)。
+YOLO 单输出可能拼接像素级 boxes 与低幅值 scores。INT8 后要单独检查类别分数是否被量化范围吞没，不能只看整个输出的余弦。先确认后端实际采用的 scale；若两个分支共享的步长过大，降低阈值也无法恢复已经丢失的分数差异。必要时使用经过验证的混合精度或分支拆分方案，并同步检查输出顺序、各分支反量化与后处理。输出拼接本身不代表所有后端都会共享尺度，拆分也需要重新验证任务精度。校准与混合精度方法见 [Sophgo INT8 量化](../../topics/quantization-accuracy/Sophgo_INT8量化.md)。
 
 当前工具中的 DEIMv2、EdgeCrafter 主要使用静态 FP16 路径，不能把统一参数表当成它们已经支持 INT8 的证据。动态输入也按“模型、后端、版本”组合声明：
 

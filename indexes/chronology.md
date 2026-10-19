@@ -61,7 +61,6 @@
 | 首次工作 | 更新范围截止 | 类型 | 内容 |
 | --- | --- | --- | --- |
 | 2026-06-10 | 2026-06-15 | 专题 | [视频转码、抽帧与时间定位的一致性](../topics/data-evaluation/视频_采样与时间定位.md) |
-| 2026-06-11 | 2026-08-10 | 专题 | [YOLO 检测头的输出范围与量化尺度](../topics/quantization-accuracy/YOLO_检测头量化尺度.md) |
 | 2026-06-23 | 2026-06-24 | 专题 | [NVIDIA GPU 负载下整机掉电的分层排查](../topics/engineering-runtime/NVIDIA_GPU掉电排障.md) |
 | 2026-06-29 | 2026-09-15 | 专题 | [端侧多模态会话与流式语音的状态管理](../topics/engineering-runtime/端侧_会话与语音状态.md) |
 
