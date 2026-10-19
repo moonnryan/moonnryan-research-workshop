@@ -78,7 +78,7 @@
 
 | 首次工作 | 更新范围截止 | 类型 | 内容 |
 | --- | --- | --- | --- |
-| 2026-08-04 | 2026-08-04 | 专题 | [NVIDIA 视频 AI 的容量与排队模型](../topics/inference-performance/NVIDIA_视频容量规划.md) |
+| 2026-08-04 | 2026-08-04 | 专题 | [NVIDIA 多路视频 AI 的资源预算与容量规划](../topics/inference-performance/NVIDIA_视频容量规划.md) |
 | 2026-08-07 | 2026-08-13 | 专题 | [Ascend 910B 驱动异常与异步错误定位](../topics/engineering-runtime/Ascend_驱动与异步错误.md) |
 | 2026-08-10 | 2026-10-08 | 矩阵 | [CV 多平台部署约束矩阵](../assets/matrices/CV_多平台部署约束.md) |
 | 2026-08-11 | 2026-08-12 | 专题 | [RKNN 上 DEIM 的采样语义与部署边界](../topics/graphs-operators/RKNN_DEIM部署边界.md) |

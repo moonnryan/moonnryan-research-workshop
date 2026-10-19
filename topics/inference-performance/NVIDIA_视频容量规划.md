@@ -1,5 +1,5 @@
 ---
-title: NVIDIA 视频 AI 的容量与排队模型
+title: NVIDIA 多路视频 AI 的资源预算与容量规划
 created: 2026-08-04
 updated: 2026-08-04
 status: draft
@@ -7,7 +7,7 @@ blog: true
 tags: [NVIDIA, NVDEC, NVENC, 视频, 容量规划, 性能]
 ---
 
-# NVIDIA 视频 AI 的容量与排队模型
+# NVIDIA 多路视频 AI 的资源预算与容量规划
 
 多路视频 AI 的容量，首先是计算与编解码资源如何分配的问题。NVDEC 能持续解码，不代表每帧都能运行模型；CV 平均计算量不高，也不代表 VLM 突发请求不会挤占推理时间。显存、数据搬运和 CPU 调度还会把这些原本不同的阶段连接起来。
 
