@@ -4,11 +4,10 @@
 
 | 日期 | 内容 |
 | --- | --- |
-| 2026-01-05 | [Ascend 服务器硬件与环境信息查询](../../assets/tutorial/Ascend_服务器信息查询.md) |
+| 2026-01-05 | [Ascend 服务器环境部署与信息查询](../../assets/tutorial/Ascend_服务器环境部署.md) |
 | 2026-01-16 | [Ascend 多模态模型的量化与工具链边界](../../topics/quantization-accuracy/Ascend_多模态量化边界.md) |
 | 2026-01-29 | [CV 模型多平台编译与部署](../../assets/tutorial/CV_多平台编译与部署.md) |
 | 2026-01-29 | [CV 模型训练与微调](../../assets/tutorial/CV_训练与微调.md) |
-| 2026-02-24 | [Ascend 驱动、固件与 CANN 的安装和维护](../../assets/tutorial/Ascend_设备生命周期.md) |
 | 2026-03-06 | [Qwen3-VL 层次化 SFT 的策略与边界](../../topics/models-training/Qwen3-VL_层次化SFT.md) |
 | 2026-05-19 | [Ascend SAM3 的图文配对与动态编译](../../topics/graphs-operators/Ascend_SAM3子图与档位.md) |
 | 2026-08-07 | [Ascend 910B 驱动异常与异步错误定位](../../topics/engineering-runtime/Ascend_驱动与异步错误.md) |
