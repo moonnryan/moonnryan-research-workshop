@@ -69,9 +69,8 @@
 | 首次工作 | 更新范围截止 | 类型 | 内容 |
 | --- | --- | --- | --- |
 | 2026-07-02 | 2026-07-22 | 专题 | [Qwen 小模型的结构化输出与任务评测](../topics/models-training/Qwen_结构化输出训练.md) |
-| 2026-07-23 | 2026-08-21 | 教程 | [Qualcomm llama.cpp 三后端编译与部署](../assets/tutorial/Qualcomm_llama.cpp部署教程.md) |
+| 2026-07-23 | 2026-09-09 | 教程 | [Qualcomm llama.cpp 部署与性能分析](../assets/tutorial/Qualcomm_llama.cpp部署教程.md) |
 | 2026-07-24 | 2026-09-24 | 专题 | [Qualcomm QNN 的依赖分层与 ABI](../topics/engineering-runtime/Qualcomm_QNN依赖与ABI.md) |
-| 2026-07-27 | 2026-09-09 | 专题 | [Qualcomm llama.cpp 的后端放置与性能边界](../topics/inference-performance/Qualcomm_llama.cpp性能边界.md) |
 
 ## 2026-08
 
