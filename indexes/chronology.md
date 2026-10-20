@@ -94,6 +94,12 @@
 | 2026-09-21 | 2026-09-24 | 专题 | [AMD 视觉 patch embedding 的 Conv3D 等价改写](../topics/graphs-operators/AMD_Conv3D等价改写.md) |
 | 2026-09-22 | 2026-09-23 | 专题 | [AMD Qwen3.5 训练的 hipBLASLt fault 定位](../topics/engineering-runtime/AMD_Qwen3.5训练故障.md) |
 
+## 2026-10
+
+| 首次工作 | 更新范围截止 | 类型 | 内容 |
+| --- | --- | --- | --- |
+| 2026-10-20 | 2026-10-20 | 专题 | [NVIDIA KV Cache 量化中的 NVFP4 与 TurboQuant](../topics/quantization-accuracy/NVIDIA_KV缓存量化.md) |
+
 ## 整理范围
 
 归并工作记录中的部署、量化、图改写、训练、数据、视频、运行时与端侧状态管理。重复操作和日常配置归入对应篇章；客户、人员、内部仓库、网络与账号信息不进入文章。未验证设计写明假设，后续推翻的结论保留反证与最终边界。

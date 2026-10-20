@@ -13,5 +13,6 @@
 | 2026-08-10 | [CV 多平台部署约束矩阵](../../assets/matrices/CV_多平台部署约束.md) |
 | 2026-09-09 | [NVIDIA TensorRT 的 QKV 布局与融合边界](../../topics/graphs-operators/NVIDIA_QKV布局与融合.md) |
 | 2026-09-14 | [多平台训练的任务、数据与版本契约](../../topics/engineering-runtime/多平台_训练任务与版本.md) |
+| 2026-10-20 | [NVIDIA KV Cache 量化中的 NVFP4 与 TurboQuant](../../topics/quantization-accuracy/NVIDIA_KV缓存量化.md) |
 
 [返回时间索引](../chronology.md)
