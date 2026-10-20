@@ -76,6 +76,8 @@ bash TRT_Compile/trt_compile.sh --model_type yolo \
 
 DEIMv2 和 EdgeCrafter 的当前封装固定静态 batch=1 FP16，不能照搬 YOLO 的动态或校准参数。TensorRT 引擎的版本和硬件兼容有明确限制，目标 Orin 上应建立自己的可加载基线，不能把服务器生成的 plan 当作通用模型文件。
 
+引擎可执行但数值明显偏离时，可参考 [TensorRT FP16 数值异常排查：QKV 布局的等价改写](../../topics/graphs-operators/NVIDIA_QKV布局与融合.md)，其中记录了从中间张量定位到导出图改写的过程。
+
 ## 2.4 Rockchip RKNN
 
 Toolkit2 主机环境、板端 Runtime/Lite2 安装与最小推理流程见 [Rockchip RKNN 环境搭建与板端推理](Rockchip_RKNN环境与推理.md)。先确认这条基础链路，再使用模型转换入口。
