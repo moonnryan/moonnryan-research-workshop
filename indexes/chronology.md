@@ -83,8 +83,8 @@
 | 2026-09-03 | 2026-09-09 | 教程 | [Qualcomm MNN 本地编译与模型部署](../assets/tutorial/Qualcomm_MNN编译与部署.md) |
 | 2026-09-09 | 2026-09-09 | 专题 | [TensorRT FP16 数值异常排查：QKV 布局的等价改写](../topics/graphs-operators/NVIDIA_QKV布局与融合.md) |
 | 2026-09-17 | 2026-10-08 | 专题 | [Qualcomm HTP 上 DEIM 的数值误差与拆图](../topics/quantization-accuracy/Qualcomm_DEIM精度归因.md) |
-| 2026-09-21 | 2026-09-24 | 专题 | [AMD 视觉 patch embedding 的 Conv3D 等价改写](../topics/graphs-operators/AMD_Conv3D等价改写.md) |
-| 2026-09-22 | 2026-09-23 | 专题 | [AMD Qwen3.5 训练的 hipBLASLt fault 定位](../topics/engineering-runtime/AMD_Qwen3.5训练故障.md) |
+| 2026-09-21 | 2026-09-24 | 专题 | [视觉 patch embedding 的等价改写：从 Conv3D 到 Linear](../topics/graphs-operators/AMD_Conv3D等价改写.md) |
+| 2026-09-22 | 2026-09-23 | 专题 | [AMD Qwen3.5 训练的故障定位与性能优化](../topics/engineering-runtime/AMD_Qwen3.5训练故障.md) |
 
 ## 2026-10
 
