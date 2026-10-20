@@ -185,6 +185,8 @@ a, button, input { -webkit-tap-highlight-color: transparent; }
 .article-outline { position: sticky; top: 38px; border-left: 1px solid var(--line); padding-left: 20px; margin-top: 72px; max-height: calc(100vh - 76px); overflow-y: auto; }
 .outline-label { font-size: 12px; color: var(--muted); letter-spacing: 1px; margin-bottom: 16px; }
 .article-outline a { display: block; font-size: 13px; line-height: 1.75; color: var(--muted); margin: 12px 0; }
+.article-outline a.outline-depth-1 { padding-inline-start: 16px; }
+.article-outline a.outline-depth-2 { padding-inline-start: 32px; }
 .article-outline a:hover { color: var(--ink); }
 .article-end { display: flex; justify-content: space-between; border-top: 1px solid var(--line); margin-top: 50px; padding-top: 22px; font-size: 13px; color: var(--muted); gap: 20px; }
 .mermaid-figure { border: 1px solid var(--line); border-radius: 5px; padding: 18px; margin: 26px 0; max-width: 100%; background: var(--surface); }

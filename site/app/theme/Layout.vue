@@ -6,15 +6,17 @@ const { page, frontmatter, isDark } = useData()
 const route = useRoute()
 const isArticle = computed(() => frontmatter.value.layout === 'article')
 const isAbout = computed(() => frontmatter.value.layout === 'about')
-const headings = ref<{ title: string; id: string }[]>([])
+const headings = ref<{ title: string; id: string; depth: number }[]>([])
 const mobileOpen = ref(false)
 
 async function updateHeadings() {
   await nextTick()
-  headings.value = [...document.querySelectorAll('.article-body h1[id], .article-body h2[id], .article-body h3[id]')]
-    .slice(1).map(element => ({
+  const elements = [...document.querySelectorAll('.article-body h1[id], .article-body h2[id], .article-body h3[id]')].slice(1)
+  const baseLevel = Math.min(...elements.map(element => Number(element.tagName.slice(1))))
+  headings.value = elements.map(element => ({
       id: element.id,
       title: (element.textContent ?? '').replace(/\u200b/g, '').trim(),
+      depth: Number(element.tagName.slice(1)) - baseLevel,
     }))
 }
 onMounted(updateHeadings)
@@ -62,7 +64,7 @@ watch(() => route.path, () => { mobileOpen.value = false; updateHeadings() })
         </article>
         <aside v-if="headings.length" class="article-outline" aria-label="文章目录">
           <div class="outline-label">本文目录</div>
-          <a v-for="heading in headings" :key="heading.id" :href="'#' + heading.id">{{ heading.title }}</a>
+          <a v-for="heading in headings" :key="heading.id" :href="'#' + heading.id" :class="'outline-depth-' + heading.depth">{{ heading.title }}</a>
         </aside>
       </div>
       <div v-else-if="isAbout" class="about-layout"><div class="section-eyebrow">ABOUT THE WORKSHOP</div><Content class="vp-doc" /></div>
