@@ -23,7 +23,6 @@
 ## 机制与取舍
 
 - [DEIM 微调中的配置、前处理与权重产物](../topics/models-training/DEIM_微调与产物契约.md)
-- [多平台训练的任务、数据与版本契约](../topics/engineering-runtime/多平台_训练任务与版本.md)
-- [多平台模型编译与运行时的契约](../topics/engineering-runtime/多平台_编译与运行时契约.md)
+- [多平台模型任务的版本与产物管理](../topics/engineering-runtime/多平台_任务与产物管理.md)
 - [RKNN DEIM 部署边界](../topics/graphs-operators/RKNN_DEIM部署边界.md)
 - [Qualcomm DEIM 精度归因](../topics/quantization-accuracy/Qualcomm_DEIM精度归因.md)

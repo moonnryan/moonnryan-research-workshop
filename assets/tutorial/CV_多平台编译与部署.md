@@ -4,8 +4,8 @@ created: 2026-01-29
 updated: 2026-10-08
 status: draft
 blog: false
-aliases: [/assets/tutorial/YOLO_多平台训练部署教程.html]
-tags: [CV, YOLO, DEIMv2, EdgeCrafter, InsightFace, NVIDIA, Ascend, Sophgo, Rockchip, Qualcomm, 部署]
+aliases: [/assets/tutorial/YOLO_多平台训练部署教程.html, /topics/quantization-accuracy/NVIDIA_TensorRT量化边界.html]
+tags: [CV, YOLO, DEIMv2, EdgeCrafter, InsightFace, NVIDIA, Ascend, Sophgo, Rockchip, Qualcomm, TensorRT, INT8, QDQ, 部署]
 ---
 
 # CV 模型多平台编译与部署
@@ -135,11 +135,45 @@ InsightFace 的 ONNX 或双模型目录可以交给 `--model_type insightface`�
 
 # 五、在浮点基线上增加量化与动态输入
 
-校准集使用接近部署分布的真实图片，按该后端正式输入规则生成。普通浮点 ONNX 与已经含 Q/DQ 的图采用不同量化入口，不在显式量化图上重复套用隐式校准。
+## 5.1 先固定校准输入
+
+校准集使用接近部署分布的真实图片，按该后端正式输入规则生成。校准 cache 与模型及前处理绑定，换权重、shape、颜色顺序或归一化后，需要重新核对，不能仅凭 cache 文件名相同就继续使用。
+
+## 5.2 TensorRT 的浮点校准与显式 QDQ
+
+先检查 ONNX 如何表达量化，再选择编译入口。普通浮点图可以通过校准确定范围，含 QuantizeLinear / DequantizeLinear 的图则携带显式量化尺度。两条路径职责不同，不能在未检查图的情况下同时追加 INT8 开关和校准器。
+
+```python
+from collections import Counter
+import onnx
+
+model = onnx.load("model.onnx")
+onnx.checker.check_model(model)
+ops = Counter(node.op_type for node in model.graph.node)
+print({k: ops[k] for k in ("QuantizeLinear", "DequantizeLinear")})
+print([(x.name, x.type.tensor_type.elem_type) for x in model.graph.input])
+```
+
+| 路线 | 范围来源 | 应保存的材料 |
+| --- | --- | --- |
+| 浮点 ONNX＋校准 | 代表性样本与校准器 | 前处理、样本版本、cache、构建参数 |
+| 显式 QDQ ONNX | 图中尺度与量化规则 | QDQ 图、尺度配置、后端支持范围 |
+
+若存在 Q/DQ，检查 scale、zero point、axis、dtype 和连接关系，并确认目标 TensorRT 版本支持该组合。删除 Q/DQ 改变了量化表达，不能作为无条件的图清洗。`trtexec` 也不会直接把图片文件夹变成正确的校准集，需要按工具版本准备校准器或显式量化图。
+
+一次 YOLO 编译中，含 Q/DQ 的 ONNX 在构建阶段触发 Myelin 错误，另一份不含这些节点的模型通过。这个对照提供了排查方向，但没有严格证明“重复量化”，也不能推断某个 YOLO 版本的所有导出图都自带 Q/DQ。可以保留失败图，按同图 FP16、同图 QDQ、重新导出的浮点图依次对照；先确定能否构建，再验证数值。
+
+INT8 与 FP16 配合时，部分层可能保留更高精度。检查实际层精度、融合与 tactic，不能根据文件大小推断量化是否生效。静态输入、动态 profile 和硬件兼容同样需要单独验证，服务器生成的 plan 不默认适用于 AGX。
+
+## 5.3 单独验证输出分支的量化误差
 
 YOLO 单输出可能拼接像素级 boxes 与低幅值 scores。INT8 后要单独检查类别分数是否被量化范围吞没，不能只看整个输出的余弦。先确认后端实际采用的 scale；若两个分支共享的步长过大，降低阈值也无法恢复已经丢失的分数差异。必要时使用经过验证的混合精度或分支拆分方案，并同步检查输出顺序、各分支反量化与后处理。输出拼接本身不代表所有后端都会共享尺度，拆分也需要重新验证任务精度。校准与混合精度方法见 [Sophgo INT8 量化](../../topics/quantization-accuracy/Sophgo_INT8量化.md)。
 
-当前工具中的 DEIMv2、EdgeCrafter 主要使用静态 FP16 路径，不能把统一参数表当成它们已经支持 INT8 的证据。动态输入也按“模型、后端、版本”组合声明：
+当前工具中的 DEIMv2、EdgeCrafter 主要使用静态 FP16 路径，不能把统一参数表当成它们已经支持 INT8 的证据。
+
+## 5.4 动态输入按组合声明
+
+动态输入按“模型、后端、版本”组合声明：
 
 - YOLO 的部分 OM、RKNN、TensorRT 路径提供动态能力，需检查实际实现和合法档位。
 - BModel 与当前 QNN 路径使用静态输入。
@@ -168,6 +202,7 @@ manifest 记录源 ONNX 哈希、模型与任务类型、目标芯片、工具�
 - [TPU-MLIR](https://github.com/sophgo/tpu-mlir)
 - [Ascend CANN 开发文档](https://www.hiascend.com/document)
 - [TensorRT 引擎兼容说明](https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/engine-compatibility.html)
+- [TensorRT 量化类型与 QDQ](https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/work-quantized-types.html)
 - [RKNN-Toolkit2](https://github.com/airockchip/rknn-toolkit2)
 - [ONNX Runtime QNN Execution Provider](https://onnxruntime.ai/docs/execution-providers/QNN-ExecutionProvider.html)
 - [ONNX Runtime EPContext](https://onnxruntime.ai/docs/execution-providers/EP-Context-Design.html)
