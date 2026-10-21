@@ -172,6 +172,8 @@ QCS9075 的归档 QAIRT Qwen3-VL-4B 测试中，平均 TTFT 约 0.638 s，完整
 
 QAIRT 的性能潜力来自硬件适配、图划分、量化和运行时配合，并非使用 `.bin` 就天然更快。对 GGUF，主要检查后端覆盖、回退及跨设备开销；对 QAIRT，主要检查资产形状、分片调用、缓存与实际库版本。定位到具体阶段后，再决定更换资产、调整输入或升级 runtime。
 
+需要自行导出模型并编译端侧 runtime 时，可继续参考 [Qualcomm MNN 本地编译与模型部署](Qualcomm_MNN编译与部署.md)，按同一输入和计时口径与现有 bundle 比较。
+
 # 六、参考资料
 
 - [Qualcomm GenieX](https://github.com/qualcomm/GenieX)

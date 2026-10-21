@@ -13,6 +13,8 @@ DEIMv2 的可变形注意力依赖连续坐标采样。RKNN 能生成文件，�
 
 本文对应 RKNN-Toolkit2/Runtime 2.3.2、RKNPU Driver 0.9.8 的 RK3576 复测及 RK3588 历史对照。导出基线为 DEIMv2-S、静态 batch=1、640×640，不将这些结果泛化到其他模型规格和版本。
 
+Toolkit2、板端 Runtime 与最小模型的环境验证见 [Rockchip RKNN 环境搭建与板端推理](../tutorial/Rockchip_RKNN环境与推理.md)；DEIM 权重、前处理与导出参考见 [DEIM 微调中的配置、前处理与权重产物](../models-training/DEIM_微调与产物契约.md)。
+
 # 一、GridSample 的作用
 
 ```python
@@ -55,6 +57,8 @@ RK3576 的 GPU 自定义算子在初始化后注册失败，不能当作零耗�
 融合 CPU 方案从约 961.3 ms 降至 856.5 ms，整图耗时减少约 10.9%。它说明减少回退调度和边界有收益，却没有让模型进入几十毫秒级。融合 GPU 仍约 952.5 ms，也说明“把慢算子改成 GPU”不是端到端提速的充分条件。
 
 官方 v2.5.0 变更记录已列出 GridSample 的 GPU 支持。升级后应重新核对 SoC、采样模式、padding、布局与实际落点，不能沿用 2.3.2 的失败结论；GPU 支持也不等于 NPU 原生支持，本文没有新版的整图复测结果。
+
+另一个减少异构边界的实际方案见 [Qualcomm HTP 上 DEIM 的数值误差与拆图](../quantization-accuracy/Qualcomm_DEIM精度归因.md)：将三层特征作为切点，整个 decoder 放在 CPU。它处理的是 HTP 数值偏差，不能直接当作本设备上已经验证的部署方案。
 
 # 三、discrete 的采样差异
 

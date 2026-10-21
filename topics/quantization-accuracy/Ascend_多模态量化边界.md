@@ -64,6 +64,8 @@ vLLM Ascend 当前 main 分支的量化指南增加了 block-wise FP8 checkpoint
 
 华为 ATB 文档明确列出 Atlas 200I/500 A2 的普通矩阵乘和量化矩阵乘不支持 BF16 输入输出，Softmax 也有仅支持 FP16 的限制。部署时应按 FP16 基线和目标 INT8 算子规划，逐项检查模型所需算子。
 
+环境安装与组件查询见 [Ascend 服务器环境部署与信息查询](../tutorial/Ascend_服务器环境部署.md)；若最小设备运算也失败，应继续按 [Ascend 910B 驱动异常与异步错误定位](../engineering-runtime/Ascend_驱动与异步错误.md) 的方法排查底层调用链。
+
 # 五、软件环境与问题定位
 
 | 阶段 | 现象 | 优先检查 |

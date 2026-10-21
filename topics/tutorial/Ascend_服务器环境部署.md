@@ -214,6 +214,8 @@ apt-get -s remove ascend-cann-nnal \
 
 按对应安装或升级流程恢复环境，必要时重启，再依次重跑设备查询、独立算子和实际负载。安装器成功、包状态正常和运行验证通过，都应留下记录。
 
+基础运行链路通过后，再按模型路径检查能力：多模态权重与量化格式选择见 [Ascend 多模态模型的量化与工具链边界](../quantization-accuracy/Ascend_多模态量化边界.md)，多段 OM 的动态形状与运行接口见 [Ascend SAM3 的图文配对与动态编译](../graphs-operators/Ascend_SAM3子图与档位.md)。
+
 # 六、保存环境清单
 
 | 类别 | 建议记录 |

@@ -13,6 +13,8 @@ tags: [NVIDIA, TensorRT, EdgeCrafter, ONNX, 图优化]
 
 这个案例的重点是如何用等价图表达缩小问题范围。数值恢复支持将原因定位到这段图的后端处理路径，但尚不能据此确定某个 TensorRT 内部融合 kernel 的实现错误，也不代表所有 QKV 融合都会出现同类问题。
 
+TensorRT 环境、FP16 基线构建与运行检查可先参考 [NVIDIA AGX Orin 系统与 TensorRT 环境部署](../tutorial/NVIDIA_AGX部署与TensorRT.md)。本文进一步讨论环境已经可用、引擎能执行后出现的数值偏差。
+
 # 一、先区分导出问题和后端数值问题
 
 引擎能生成、推理没有报错，只说明图可以被解析和执行。判断结果是否正确，需要给 PyTorch、ONNX 参考运行时与 TensorRT 提供同一份输入张量，先比较原始输出，再比较最终检测结果。
@@ -121,6 +123,8 @@ for s in range(3):
 | 引擎层信息发生变化 | 编译器选择了不同实现或布局 | 某一项变化单独构成根因 |
 
 现有案例适用于归档的 AGX Orin / TensorRT 10.3 组合。新版本、其他模型或不同构建选项需要重新验证，不应将这个 workaround 扩大为统一的 QKV 导出规则。
+
+固定中间输入、区分上游漂移与局部计算误差的另一组对照，见 [Qualcomm HTP 上 DEIM 的数值误差与拆图](../quantization-accuracy/Qualcomm_DEIM精度归因.md)。那组实验最终选择显式拆图，本例则通过保持数学语义的布局改写恢复输出。
 
 # 五、诊断图与正式引擎分别验证
 

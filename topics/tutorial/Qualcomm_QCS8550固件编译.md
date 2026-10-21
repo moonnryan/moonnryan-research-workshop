@@ -187,6 +187,8 @@ dmesg | tail -80
 
 保存实际烧录包的哈希、QFIL 日志和启动后的版本信息。能进入系统说明启动链路基本可用，仍不能替代加速器调用测试；系统镜像更新后，用户态 SDK、驱动与 DSP 固件是否匹配，需要通过真实调用确认。
 
+系统启动后若要继续部署 HTP 模型，先检查 FastRPC、DSP 库与用户态运行库，依赖分层和排查方法见 [Qualcomm QNN 环境部署与 ABI 排查](Qualcomm_QNN依赖与ABI.md)。
+
 # 六、参考资料
 
 - [Yocto 内核构建与调试](https://docs.yoctoproject.org/4.0.25/kernel-dev/common.html)

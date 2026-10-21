@@ -29,6 +29,8 @@ TPU hang 则需要设备侧证据。一次 HTTP 超时、进程仍存在或内�
 
 这些故障可能叠加。按时间顺序对齐服务日志与内核日志，重点找第一次异常：是进程先发生非法访问，随后设备调用失败，还是先出现设备错误，随后宿主程序在处理失败时崩溃。
 
+SDK 与原生例程的准备见 [Sophgo 模型编译部署教程](../tutorial/Sophgo_模型编译部署教程.md)；视觉编码、prefill 和 decode/cache 的执行关系见 [Sophgo Qwen3-VL 子图导出与部署边界](../graphs-operators/Sophgo_Qwen3-VL导出与部署.md)，便于按阶段构造最小复现。
+
 # 二、缩小复现条件
 
 固定 BModel、SDK、运行库和测试输入，再逐步去掉媒体接入、插件和 HTTP 层。CV 模型可以先用 `bmrt_test` 检查加载和执行；Qwen3-VL 则保留最小原生例程，覆盖视觉编码、prefill、decode 和缓存状态。直接用随机输入运行其中一个子图，只能检查该子图的可运行性。

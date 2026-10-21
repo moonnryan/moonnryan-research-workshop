@@ -395,6 +395,9 @@ int main()
 进入前文创建的模型编译容器 `BModel_Compile`。下述 Qwen3-VL、YOLOv5 命令均在该容器执行。
 
 ### 2.1 Qwen3-VL 转换
+
+转换器入口、prefill/decode 职责及多设备部署的进一步分析见 [Sophgo Qwen3-VL 子图导出与部署边界](../graphs-operators/Sophgo_Qwen3-VL导出与部署.md)。
+
 `llm_convert.py` 的直接构图路径读取模型权重与配置，按语言层及视觉等模块构建 MLIR 子图，再编译并合并为 BModel，同时导出运行所需的 config。ONNX 导出路径则先生成逐层 ONNX，再通过 `model_transform.py` 转成 MLIR。具体流程由转换入口和工具版本决定。
 
 支持的主要参数如下:
@@ -448,6 +451,8 @@ llm_convert.py -m /workspace/Qwen3-VL-4B-Instruct -s 4096 --max_input_length 204
 
 llm_convert.py -m /workspace/Qwen3-VL-8B-Instruct -s 4096 --max_input_length 2048 --quantize w4bf16 -c bm1684x --out_dir qwen3vl_8b --max_pixels 768,768 --use_block_with_kv
 ```
+
+W4 编译若报 `invalid scale channel`，先按 [Sophgo INT4 编译中的 scale 通道对齐限制](../quantization-accuracy/Sophgo_INT4编译失败.md) 检查实际失败层的布局条件，再决定是否调整量化参数。
 
 **YOLOv5 的 ONNX、校准与混合精度流程**
 
@@ -542,6 +547,8 @@ cd ..
 ![](https://cdn.nlark.com/yuque/0/2026/png/65292342/1770625364778-be9976cb-6f35-452a-a8a3-fb137939af6a.png)
 
 ### 2.4 YOLOv5 INT8 校准
+
+校准表、qtable、阈值搜索和任务精度之间的关系见 [Sophgo INT8 量化与精度调优](../quantization-accuracy/Sophgo_INT8量化.md)。
 
 此处采用 INT8 对称量化流程，先通过 `run_calibration` 生成校准表。所谓“全 INT8”仍可能包含编译器保留的浮点算子；实际类型以生成的 TPU MLIR 和模型信息为准。下表保留原流程的校准选型参考，最终用目标数据验证。
 
@@ -735,6 +742,8 @@ make && cp pipeline .. && cd ..
 在这套 SoC 盒子的 Qwen3-VL 服务中，模型只加载一份，请求按顺序使用同一实例。HTTP 入口可以接收多个请求，但设备侧的生成过程串行执行，线程池大小不代表模型并行度。排队需要设置等待上限与超时，测试时区分排队时间和实际生成时间。
 
 每次请求开始前重置会话状态，完整生成结束后再让下一个请求进入。流式响应要让锁覆盖生成器的整个消费过程；如果创建 `StreamingResponse` 后就释放锁，后续请求仍可能清空前一请求正在使用的缓存。多请求测试应检查输出隔离和等待时间，不能据此宣称设备支持并行推理。
+
+生成过程中断、退出与重新加载的资源问题见 [Sophgo Qwen3-VL 异常退出后的 TPU hang](../engineering-runtime/Sophgo_TPU故障归因.md)。
 
 ### 3.2 YOLOv5 例程
 + **python**  `sample/YOLOv5/python_demo`不需要编译：  如果使用SoC平台（如SE、SM系列边缘设备），并使用它测试本例程，刷机后在`/opt/sophon/`下已经预装了相应的libsophon、sophon-opencv和sophon-ffmpeg运行库包。还需要交叉编译安装sophon-sail，具体可参考交叉编译安装sophon-sail。  此外还需要配置opencv等其他第三方库：

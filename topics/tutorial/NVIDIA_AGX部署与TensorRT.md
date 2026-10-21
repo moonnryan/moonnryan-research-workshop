@@ -294,6 +294,8 @@ docker run --rm --runtime=nvidia \
 
 `--fp16` 允许编译器使用 FP16，并不要求每一层和输入输出都是 FP16。先验证浮点路径，再增加 INT8 及校准逻辑，便于区分模型导出、编译与量化误差。
 
+若 FP16 引擎构建和执行成功，但固定样本输出明显偏离，可参考 [TensorRT FP16 数值异常排查：QKV 布局的等价改写](../graphs-operators/NVIDIA_QKV布局与融合.md)，从中间张量与图表达继续定位。
+
 ## 6.3 动态 batch 与 profile
 
 假设输入叫 `images`，只有首维动态，通道和分辨率固定为 3×640×640：
@@ -376,6 +378,8 @@ sudo jetson_clocks --show
 ```
 
 `jetson_clocks --show` 是查询，不等于执行不带参数的锁频操作。比较性能时同时记录温度、内存和其他负载，区分 GPU 计算时间、数据传输与端到端时延，不直接把 `trtexec` 的吞吐当成视频服务处理速度。
+
+将引擎接入多路视频后，解码、推理、缓冲与排队需要分别预算，方法见 [NVIDIA 多路视频 AI 的资源预算与容量规划](../inference-performance/NVIDIA_视频容量规划.md)。
 
 ## 7.2 打包可复现的部署材料
 

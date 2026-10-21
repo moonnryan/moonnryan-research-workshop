@@ -35,6 +35,8 @@ DEIM 的输入不能直接套用常见 YOLO Letterbox 流程。`orig_target_size
 
 同样要核对输出名称、顺序和加载产物的哈希。QAI AppBuilder 的精度检查材料特别提醒，context 可能改变 I/O 顺序，其包装层依赖配套元数据恢复映射。使用该路径时应检查映射文件；本文的 ORT 路径则按模型 I/O 名称核对。两条路径都需要先排除布局错位、旧产物或输出配对错误，再讨论硬件数值。
 
+作为这条 CPU 参考的前置步骤，权重选择、骨干前处理和部署态导出检查见 [DEIM 微调中的配置、前处理与权重产物](../models-training/DEIM_微调与产物契约.md)。
+
 # 二、用正反向拆分定位问题
 
 将 backbone 与 encoder 合记为 $E$，decoder 与后处理合记为 $D$。CPU 参考链路为：
@@ -199,6 +201,8 @@ options.add_session_config_entry("session.disable_cpu_ep_fallback", "1")
 ```
 
 再结合 ORT provider 分配、QNN profiling 和必要的 framework op trace 核对。`session.get_providers()` 包含 QNN 只代表 Session 注册了这个 provider；执行图中的 QNN 融合节点也不再与原始 ONNX 节点一一对应。归因实验应同时保存原始节点到分区的关系及实际执行记录。
+
+[RKNN 上 DEIM 的采样语义与部署边界](../graphs-operators/RKNN_DEIM部署边界.md) 也记录了回退边界的实际成本，但起点是采样算子的支持与语义问题。两组案例可共同用于检查执行位置和搬运开销，具体切点仍由各自实验决定。
 
 # 七、将稳定切点固化为两个产物
 

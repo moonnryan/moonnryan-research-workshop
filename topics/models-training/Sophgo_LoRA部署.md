@@ -53,6 +53,8 @@ flowchart LR
 
 是否值得采用动态分支，应由切换频率、模型生成成本和实际推理开销决定，而不是仅凭“可以热加载”判断。
 
+Qwen3-VL 的视觉、prefill 与 decode/cache 子图如何组织，见 [Sophgo Qwen3-VL 子图导出与部署边界](../graphs-operators/Sophgo_Qwen3-VL导出与部署.md)。LoRA 的预留分支需要落到对应子图，合并模型文件并不会消除这些执行接口。
+
 # 二、编译 BModel
 
 **预留最大 rank**
