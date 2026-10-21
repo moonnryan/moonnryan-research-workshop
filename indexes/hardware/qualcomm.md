@@ -4,7 +4,6 @@
 
 | 日期 | 内容 |
 | --- | --- |
-| 2026-01-29 | [CV 模型多平台编译与部署](../../topics/tutorial/CV_多平台编译与部署.md) |
 | 2026-03-24 | [Qualcomm QCS8550 固件编译与烧录](../../topics/tutorial/Qualcomm_QCS8550固件编译.md) |
 | 2026-07-23 | [Qualcomm llama.cpp 部署与性能分析](../../topics/tutorial/Qualcomm_llama.cpp部署教程.md) |
 | 2026-07-24 | [Qualcomm QNN 环境部署与 ABI 排查](../../topics/tutorial/Qualcomm_QNN依赖与ABI.md) |

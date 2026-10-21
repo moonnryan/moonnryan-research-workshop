@@ -328,6 +328,21 @@ workspace 限制也不是整个构建进程或运行时的总内存上限。Orin
 
 常规部署优先在目标 Orin 或匹配的 Jetson 构建环境生成引擎。版本兼容与硬件兼容是不同选项，并且有平台限制；JetPack 不支持的硬件兼容模式，不能用来实现桌面 GPU 到 Orin 的通用引擎迁移。
 
+## 6.5 区分 INT8 校准与显式 QDQ
+
+以下区分针对本文的 TensorRT 10.3 环境。该版本已将隐式 INT8 量化与校准器 API 标记为弃用，维护旧流程时仍需分清两条路径。先检查 ONNX 是否包含 `QuantizeLinear` / `DequantizeLinear`，再决定量化范围从哪里来：
+
+| 路径 | 量化范围来源 | 构建前需要核对 |
+| --- | --- | --- |
+| 浮点图的隐式 INT8 校准 | 代表性样本与校准器 | 正式前处理、校准器实现与 cache |
+| 显式 QDQ 图 | 图内的尺度与量化节点 | scale、zero point、axis、dtype 与目标版本支持 |
+
+校准输入必须与正式推理的颜色、归一化、布局和 shape 一致。模型、前处理或输入尺寸改变后，重新核对校准 cache；`trtexec` 不会将图片目录自动变成正确的校准输入，需要配套校准程序或兼容的校准表。没有真实校准数据的 INT8 性能测试不能用于证明精度通过。
+
+显式 QDQ 图已经表达量化语义，不再用校准器重新决定这套范围。不要将删除 Q/DQ 当作普通图清洗，也不要在没有核对图的情况下叠加量化参数。构建失败时保留原图与日志，将浮点基线、QDQ 图及对应构建配置分别对照；某份移除 QDQ 的图能构建，不足以证明之前发生了“重复量化”。
+
+数值验证还要分别检查输出分支。检测图可能将像素尺度的 boxes 与低幅值 scores 拼接在一起；若实际量化粒度使分数分辨率不足，整体余弦仍可能掩盖阈值附近的损失。先确认实际尺度、层精度与任务结果，再考虑混合精度或调整输出分支，不能仅靠降低检测阈值补偿已经丢失的数值。
+
 # 七、运行验证与部署打包
 
 ## 7.1 分开检查数值和性能
@@ -391,4 +406,4 @@ sha256sum model.onnx model-fp16.plan
 - [TensorRT trtexec 参数](https://docs.nvidia.com/deeplearning/tensorrt/latest/reference/command-line-programs.html)
 - [TensorRT 引擎兼容边界](https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/engine-compatibility.html)
 - [TensorRT 10.x 支持矩阵](https://docs.nvidia.com/deeplearning/tensorrt/10.x.x/getting-started/support-matrix.html)
-
+- [TensorRT 10.x 量化类型、校准与 QDQ](https://docs.nvidia.com/deeplearning/tensorrt/10.x.x/inference-library/work-quantized-types.html)

@@ -6,10 +6,9 @@
 
 ## 当前内容
 
-按工作时间整理了 2025 年 12 月至 2026 年 10 月的技术积累，共 37 篇：24 篇专题、13 篇教程。相近记录合并为同一问题的完整篇章，后续验证与结论修正也归入原文。
+按工作时间整理了 2025 年 12 月至 2026 年 10 月的技术积累，共 33 篇：23 篇专题、10 篇教程。相近记录合并为同一问题的完整篇章，后续验证与结论修正也归入原文。
 
 - [按工作时间阅读全部内容](indexes/chronology.md)
-- [CV 训练、ONNX 导出与多平台部署](indexes/cv-workflow.md)
 - 按设备阅读：[Sophgo](indexes/hardware/sophgo.md)、[Intel](indexes/hardware/intel.md)、[Ascend](indexes/hardware/ascend.md)、[NVIDIA](indexes/hardware/nvidia.md)、[Qualcomm](indexes/hardware/qualcomm.md)、[Rockchip](indexes/hardware/rockchip.md)
 
 内容覆盖 VLM 数据与 SFT、模型量化、计算图改写、异构执行、设备维护、视频时序、端侧会话和多平台训练。当前整理稿保留 `draft`，逐篇审阅后转为 `ready`。未完成的验证与研究假设会在文中说明。

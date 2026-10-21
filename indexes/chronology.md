@@ -20,9 +20,6 @@
 | --- | --- | --- | --- |
 | 2026-01-05 | 2026-08-18 | 教程 | [Ascend 服务器环境部署与信息查询](../topics/tutorial/Ascend_服务器环境部署.md) |
 | 2026-01-16 | 2026-03-02 | 专题 | [Ascend 多模态模型的量化与工具链边界](../topics/quantization-accuracy/Ascend_多模态量化边界.md) |
-| 2026-01-29 | 2026-10-08 | 教程 | [CV 模型多平台编译与部署](../topics/tutorial/CV_多平台编译与部署.md) |
-| 2026-01-29 | 2026-10-09 | 教程 | [CV 模型训练与微调](../topics/tutorial/CV_训练与微调.md) |
-| 2026-01-29 | 2026-10-08 | 教程 | [CV 模型 ONNX 导出与验证](../topics/tutorial/CV_ONNX导出与验证.md) |
 
 ## 2026-03
 
@@ -39,7 +36,6 @@
 | --- | --- | --- | --- |
 | 2026-04-13 | 2026-04-23 | 专题 | [Sophgo Qwen3-VL 异常退出后的 TPU hang](../topics/engineering-runtime/Sophgo_TPU故障归因.md) |
 | 2026-04-21 | 2026-04-21 | 专题 | [Sophgo INT4 编译中的 scale 通道对齐限制](../topics/quantization-accuracy/Sophgo_INT4编译失败.md) |
-| 2026-04-28 | 2026-10-10 | 专题 | [多平台模型任务的版本与产物管理](../topics/engineering-runtime/多平台_任务与产物管理.md) |
 
 ## 2026-05
 
