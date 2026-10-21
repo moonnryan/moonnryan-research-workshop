@@ -188,7 +188,6 @@ a, button, input { -webkit-tap-highlight-color: transparent; }
 .article-outline a.outline-depth-1 { padding-inline-start: 16px; }
 .article-outline a.outline-depth-2 { padding-inline-start: 32px; }
 .article-outline a:hover { color: var(--ink); }
-.article-end { display: flex; justify-content: space-between; border-top: 1px solid var(--line); margin-top: 50px; padding-top: 22px; font-size: 13px; color: var(--muted); gap: 20px; }
 .mermaid-figure { border: 1px solid var(--line); border-radius: 5px; padding: 18px; margin: 26px 0; max-width: 100%; background: var(--surface); }
 .mermaid-figure > div { min-width: 0; }
 .mermaid-figure svg { display: block; margin: auto; max-width: 100%; height: auto; }
@@ -259,4 +258,45 @@ a, button, input { -webkit-tap-highlight-color: transparent; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; }
+}
+
+/* Topic navigation and further reading share the site's paper and ink palette. */
+.related-section { grid-column: 1 / -1; min-width: 0; border-top: 1px solid var(--line); padding-top: 30px; }
+.related-heading, .topics-header, .topic-group-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; }
+.related-heading h2 { margin: 0; font-size: 25px; font-weight: 600; }
+.related-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 24px; }
+.related-card { display: flex; flex-direction: column; padding: 24px; min-height: 218px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); transition: border-color .18s, background .18s; }
+.related-card:hover { border-color: var(--accent); background: var(--hover); }
+.related-card h3 { margin: 22px 0 28px; font-size: 19px; line-height: 1.65; font-weight: 550; overflow-wrap: anywhere; }
+.related-category { margin-left: auto; padding-left: 8px; }
+.related-read { margin-top: auto; color: var(--accent); font-size: 13px; }
+.article-outline a { position: relative; transition: color .15s; line-height: 24px; }
+.article-outline a.is-current { font-size: 14px; font-weight: 650; color: var(--accent); }
+.article-outline a.is-current::before { content: ''; position: absolute; left: -20px; top: 2px; bottom: 2px; width: 2px; background: var(--accent); }
+.article-body :is(h1, h2, h3)[id], .topic-group { scroll-margin-top: 40px; }
+.topics-page { padding: 42px 0 65px; }
+.topics-header h1 { font-size: 36px; font-weight: 600; margin: 0; }
+.topics-count { font-size: 12px; color: var(--muted); }
+.topic-cloud { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 20px 36px; padding: 55px 28px; margin: 28px 0 44px; background: var(--surface); border-radius: 12px; }
+.topic-cloud a { font-size: var(--topic-size); line-height: 1.5; color: var(--accent); letter-spacing: -.8px; }
+.topic-cloud a:hover { color: var(--ink); }
+.topic-cloud sup { font-size: 12px; vertical-align: super; margin-left: 6px; color: var(--muted); letter-spacing: 0; }
+.topic-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; row-gap: 40px; }
+.topic-group { min-width: 0; border-top: 1px solid var(--line); padding-top: 22px; }
+.topic-group h2 { margin: 0; font-size: 20px; font-weight: 550; }
+.topic-group-heading .subtle-link { white-space: nowrap; }
+.topic-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.topic-tags a { display: inline-flex; align-items: center; gap: 9px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 5px; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.topic-tags a:hover { background: var(--hover); color: var(--accent); border-color: var(--accent); }
+.tag-count { color: var(--soft-ink); font-size: 11px; }
+@media (max-width: 700px) {
+  .related-grid, .topic-groups { grid-template-columns: 1fr; }
+  .related-card { min-height: 160px; padding: 20px; }
+  .related-category { font-size: 11px; }
+  .related-heading h2 { font-size: 22px; }
+  .related-heading .subtle-link { font-size: 11px; }
+  .topics-page { padding-top: 32px; }
+  .topics-header h1 { font-size: 29px; }
+  .topic-cloud { padding: 28px 18px; gap: 14px 24px; }
+  .topic-cloud a { font-size: calc(var(--topic-size) * .75); }
 }

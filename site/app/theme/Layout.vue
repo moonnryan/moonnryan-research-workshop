@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, watch, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, watch, ref } from 'vue'
 import { useData, useRoute, withBase } from 'vitepress'
+import RelatedArticles from './components/RelatedArticles.vue'
 
 const { page, frontmatter, isDark } = useData()
 const route = useRoute()
@@ -8,24 +9,70 @@ const isArticle = computed(() => frontmatter.value.layout === 'article')
 const isAbout = computed(() => frontmatter.value.layout === 'about')
 const headings = ref<{ title: string; id: string; depth: number }[]>([])
 const mobileOpen = ref(false)
+const activeHeading = ref('')
+let headingElements: HTMLElement[] = []
+let scrollFrame = 0
+let bodyObserver: ResizeObserver | undefined
+
+function updateActiveHeading() {
+  scrollFrame = 0
+  if (!headingElements.length) { activeHeading.value = ''; return }
+  let current = headingElements[0]
+  for (const element of headingElements) {
+    if (element.getBoundingClientRect().top <= 110) current = element
+    else break
+  }
+  if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 8) {
+    current = headingElements[headingElements.length - 1]
+  }
+  activeHeading.value = current.id
+}
+
+function scheduleHeadingUpdate() {
+  if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateActiveHeading)
+}
 
 async function updateHeadings() {
   await nextTick()
-  const elements = [...document.querySelectorAll('.article-body h1[id], .article-body h2[id], .article-body h3[id]')].slice(1)
+  bodyObserver?.disconnect()
+  const elements = [...document.querySelectorAll<HTMLElement>('.article-body h1[id], .article-body h2[id], .article-body h3[id]')].slice(1)
+  headingElements = elements
   const baseLevel = Math.min(...elements.map(element => Number(element.tagName.slice(1))))
   headings.value = elements.map(element => ({
       id: element.id,
       title: (element.textContent ?? '').replace(/\u200b/g, '').trim(),
       depth: Number(element.tagName.slice(1)) - baseLevel,
     }))
+  const body = document.querySelector('.article-body')
+  if (body) bodyObserver?.observe(body)
+  scheduleHeadingUpdate()
 }
-onMounted(updateHeadings)
 onMounted(() => {
+  bodyObserver = new ResizeObserver(scheduleHeadingUpdate)
+  updateHeadings()
+  window.addEventListener('scroll', scheduleHeadingUpdate, { passive: true })
+  window.addEventListener('resize', scheduleHeadingUpdate)
   watch(isDark, dark => {
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#1b1e1b' : '#f8f7f3')
   }, { immediate: true })
 })
-watch(() => route.path, () => { mobileOpen.value = false; updateHeadings() })
+onUnmounted(() => {
+  bodyObserver?.disconnect()
+  window.cancelAnimationFrame(scrollFrame)
+  window.removeEventListener('scroll', scheduleHeadingUpdate)
+  window.removeEventListener('resize', scheduleHeadingUpdate)
+})
+watch(() => page.value.relativePath, () => { mobileOpen.value = false; updateHeadings() }, { flush: 'post' })
+watch(activeHeading, async () => {
+  await nextTick()
+  const outline = document.querySelector<HTMLElement>('.article-outline')
+  const active = outline?.querySelector<HTMLElement>('[aria-current="location"]')
+  if (!outline || !active) return
+  const parent = outline.getBoundingClientRect()
+  const child = active.getBoundingClientRect()
+  if (child.bottom > parent.bottom) outline.scrollTop += child.bottom - parent.bottom + 12
+  else if (child.top < parent.top) outline.scrollTop -= parent.top - child.top + 12
+})
 </script>
 
 <template>
@@ -39,6 +86,7 @@ watch(() => route.path, () => { mobileOpen.value = false; updateHeadings() })
       <nav id="main-navigation" class="main-nav" :class="{ 'is-open': mobileOpen }" aria-label="主导航">
         <a :class="{ active: route.path === withBase('/') }" :href="withBase('/')">首页</a>
         <a :class="{ active: isArticle || route.path.includes('/articles') }" :href="withBase('/articles.html')">文章</a>
+        <a :class="{ active: frontmatter.layout === 'topics' }" :href="withBase('/topics.html')">主题</a>
         <a :class="{ active: isAbout }" :href="withBase('/about.html')">关于</a>
         <a class="github-link" href="https://github.com/moonnryan" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
         <button class="appearance-toggle" type="button" aria-label="切换深浅色模式" title="切换深浅色模式" @click="isDark = !isDark">
@@ -60,12 +108,12 @@ watch(() => route.path, () => { mobileOpen.value = false; updateHeadings() })
             <a v-for="tag in frontmatter.tags" :key="tag" :href="withBase('/articles.html?tag=' + encodeURIComponent(tag))">{{ tag }}</a>
           </div>
           <Content :key="page.relativePath" class="vp-doc article-body" />
-          <div class="article-end"><span>读到这里，感谢你的时间。</span><a :href="withBase('/articles.html')">继续阅读 ↗</a></div>
         </article>
         <aside v-if="headings.length" class="article-outline" aria-label="文章目录">
           <div class="outline-label">本文目录</div>
-          <a v-for="heading in headings" :key="heading.id" :href="'#' + heading.id" :class="'outline-depth-' + heading.depth">{{ heading.title }}</a>
+          <a v-for="heading in headings" :key="heading.id" :href="'#' + heading.id" :class="['outline-depth-' + heading.depth, { 'is-current': heading.id === activeHeading }]" :aria-current="heading.id === activeHeading ? 'location' : undefined">{{ heading.title }}</a>
         </aside>
+        <RelatedArticles :url="route.path" />
       </div>
       <div v-else-if="isAbout" class="about-layout"><div class="section-eyebrow">ABOUT THE WORKSHOP</div><Content class="vp-doc" /></div>
       <Content v-else :key="page.relativePath" />

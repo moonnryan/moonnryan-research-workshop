@@ -9,13 +9,29 @@ const pageSize = 10
 const currentPage = ref(1)
 
 function readTag() {
-  selectedTag.value = new URLSearchParams(window.location.search).get('tag') ?? ''
+  const params = new URLSearchParams(window.location.search)
+  selectedTag.value = params.get('tag') ?? ''
+  const topic = params.get('topic')
+  selected.value = categories.some(([key]) => key === topic) ? topic! : 'all'
 }
 onMounted(() => {
   readTag()
   window.addEventListener('workshop-route-change', readTag)
+  window.addEventListener('popstate', readTag)
 })
-onUnmounted(() => window.removeEventListener('workshop-route-change', readTag))
+onUnmounted(() => {
+  window.removeEventListener('workshop-route-change', readTag)
+  window.removeEventListener('popstate', readTag)
+})
+
+function selectCategory(category: string) {
+  selected.value = category
+  const params = new URLSearchParams(window.location.search)
+  if (category === 'all') params.delete('topic')
+  else params.set('topic', category)
+  const search = params.toString()
+  window.history.replaceState({}, '', withBase('/articles.html') + (search ? '?' + search : ''))
+}
 
 const filtered = computed(() => articles.filter(article => {
   const matchesCategory = selected.value === 'all' || article.category === selected.value
@@ -50,7 +66,7 @@ function clearFilters() {
   <section class="listing-page" aria-labelledby="listing-title">
     <div class="listing-header"><h1 id="listing-title" class="heading-count"><span class="heading-count-number">{{ String(articles.length).padStart(2, '0') }}</span><span class="heading-count-label">total notes</span></h1></div>
     <div class="list-toolbar">
-      <div class="category-filters" aria-label="按主题筛选"><button :class="{ selected: selected === 'all' }" @click="selected = 'all'">全部</button><button v-for="[key, name] in categories" :key="key" :class="{ selected: selected === key }" @click="selected = key">{{ name }}</button></div>
+      <div class="category-filters" aria-label="按主题筛选"><button :class="{ selected: selected === 'all' }" @click="selectCategory('all')">全部</button><button v-for="[key, name] in categories" :key="key" :class="{ selected: selected === key }" @click="selectCategory(key)">{{ name }}</button></div>
       <div class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input v-model="query" type="search" aria-label="搜索文章" placeholder="搜索标题或关键词"></div>
     </div>
     <div v-if="selectedTag" class="active-tag">标签 <strong>#{{ selectedTag }}</strong><button @click="clearFilters">清除</button></div>
