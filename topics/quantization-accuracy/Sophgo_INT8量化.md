@@ -2,7 +2,7 @@
 title: Sophgo INT8 量化与精度调优
 created: 2025-12-09
 updated: 2026-02-09
-status: draft
+status: ready
 blog: true
 tags: [Sophgo, BM1684X, YOLOv5, TPU-MLIR, INT8, 校准, 混合精度]
 ---

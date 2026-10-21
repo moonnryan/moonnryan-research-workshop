@@ -2,8 +2,8 @@
 title: Intel B60 上的 Qwen3-VL vLLM 部署
 created: 2025-12-11
 updated: 2026-01-22
-status: draft
-blog: false
+status: ready
+blog: true
 tags: [Intel, B60, XPU, vLLM, Qwen3-VL]
 aliases: [/assets/tutorial/Intel_B60_vLLM部署教程.html]
 ---

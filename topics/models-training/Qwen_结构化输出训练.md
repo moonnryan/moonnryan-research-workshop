@@ -2,7 +2,7 @@
 title: Qwen 小模型的结构化输出与任务评测
 created: 2026-07-02
 updated: 2026-07-22
-status: draft
+status: ready
 blog: true
 tags: [Qwen3.5, SFT, JSON, JSON Schema, VLM, 评测]
 ---

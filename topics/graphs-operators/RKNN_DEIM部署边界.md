@@ -2,7 +2,7 @@
 title: RKNN 上 DEIM 的采样语义与部署边界
 created: 2026-08-11
 updated: 2026-08-12
-status: draft
+status: ready
 blog: true
 tags: [Rockchip, RKNN, DEIMv2, GridSample, 异构推理]
 ---

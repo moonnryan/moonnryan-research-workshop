@@ -2,7 +2,7 @@
 title: Ascend 多模态模型的量化与工具链边界
 created: 2026-01-16
 updated: 2026-03-02
-status: draft
+status: ready
 blog: true
 tags: [Ascend, 910B, 310P, 310B, Qwen3-VL, 量化, vLLM, msModelSlim]
 ---

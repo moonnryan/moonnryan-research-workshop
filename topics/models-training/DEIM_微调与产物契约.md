@@ -2,7 +2,7 @@
 title: DEIM 微调中的配置、前处理与权重产物
 created: 2026-05-29
 updated: 2026-08-21
-status: draft
+status: ready
 blog: true
 tags: [DEIMv2, EdgeCrafter, 微调, 前处理, checkpoint]
 ---

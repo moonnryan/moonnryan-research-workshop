@@ -2,7 +2,7 @@
 title: Qwen3-VL 层次化 SFT 的策略与边界
 created: 2026-03-06
 updated: 2026-03-20
-status: draft
+status: ready
 blog: true
 tags: [Qwen3-VL, SFT, Ascend, 微调, 过拟合]
 ---

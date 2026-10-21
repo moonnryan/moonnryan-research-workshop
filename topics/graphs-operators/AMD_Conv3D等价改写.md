@@ -2,7 +2,7 @@
 title: 视觉 patch embedding 的等价改写：从 Conv3D 到 Linear
 created: 2026-09-21
 updated: 2026-09-24
-status: draft
+status: ready
 blog: true
 tags: [AMD, NVIDIA, Qwen3-VL, Qwen3.5, LLaMA-Factory, Conv3D, 图优化, 训练加速]
 ---

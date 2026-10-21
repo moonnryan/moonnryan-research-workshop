@@ -2,7 +2,7 @@
 title: CV 视频场景策略的触发与恢复
 created: 2025-12-29
 updated: 2026-04-27
-status: draft
+status: ready
 blog: true
 tags: [CV, 视频, ByteTrack, 时序, 运行时]
 ---

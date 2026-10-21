@@ -29,7 +29,15 @@ npm run check
 npm run preview
 ```
 
-构建输出位于 `dist/`。当前内容保留 draft，公开构建只显示通过发布审阅的条目，本地与审阅模式可以查看全部整理稿。公开托管使用公开构建。
+构建输出位于 `dist/`。公开构建只显示通过发布审阅的条目，本地与审阅模式可以查看全部整理稿。公开托管使用公开构建，检查脚本会阻止没有文章的公开版本部署。
+
+## GitHub Pages
+
+网站地址为 https://moonnryan.github.io/，对应仓库为 `moonnryan/moonnryan.github.io`。根域名使用默认的 `base: '/'`，本地文件夹可以继续使用原来的名称。
+
+仓库 Settings → Pages → Source 选择 **GitHub Actions**。根目录的 `.github/workflows/deploy.yml` 会在推送到 `main` 后自动安装依赖、构建公开内容、检查并发布 `site/dist/`，也可以在 Actions 中手动运行。无需再配置 Jekyll 或 Static HTML，也不需要额外添加部署密钥。
+
+在 Actions 中确认 **Deploy VitePress site to Pages** 的 build 和 deploy 均通过，再访问网站。后续只需修改源文件、提交并推送，网站会自动更新。
 
 GitHub 项目页面等带路径前缀的部署，可以通过 `MRW_BASE` 设置基础路径，例如：
 

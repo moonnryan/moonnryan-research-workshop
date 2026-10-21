@@ -2,7 +2,7 @@
 title: Sophgo Qwen3-VL 子图导出与部署边界
 created: 2025-12-24
 updated: 2025-12-26
-status: draft
+status: ready
 blog: true
 tags: [Sophgo, SE8, BM1684X, TPU-MLIR, Qwen3-VL, 模型导出, 多设备]
 ---

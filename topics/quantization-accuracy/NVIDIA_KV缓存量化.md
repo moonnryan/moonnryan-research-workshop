@@ -2,7 +2,7 @@
 title: NVIDIA KV Cache 量化中的 NVFP4 与 TurboQuant
 created: 2026-10-20
 updated: 2026-10-20
-status: draft
+status: ready
 blog: true
 tags: [NVIDIA, vLLM, KV Cache, NVFP4, TurboQuant]
 ---

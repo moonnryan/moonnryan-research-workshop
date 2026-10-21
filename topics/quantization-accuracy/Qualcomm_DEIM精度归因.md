@@ -2,7 +2,7 @@
 title: Qualcomm HTP 上 DEIM 的数值误差与拆图
 created: 2026-09-17
 updated: 2026-10-08
-status: draft
+status: ready
 blog: true
 tags: [Qualcomm, QNN, DEIMv2, FP16, 精度对齐, 异构推理]
 ---

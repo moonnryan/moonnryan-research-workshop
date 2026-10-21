@@ -2,7 +2,7 @@
 title: Sophgo INT4 编译中的 scale 通道对齐限制
 created: 2026-04-21
 updated: 2026-04-21
-status: draft
+status: ready
 blog: true
 tags: [Sophgo, BM1684X, TPU-MLIR, Qwen3.5, W4, 权重重排]
 ---

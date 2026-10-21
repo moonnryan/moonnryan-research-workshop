@@ -2,8 +2,8 @@
 title: Qualcomm QCS8550 固件编译与烧录
 created: 2026-03-24
 updated: 2026-03-25
-status: draft
-blog: false
+status: ready
+blog: true
 tags: [Qualcomm, QCS8550, 固件, Yocto]
 aliases: [/assets/tutorial/Qualcomm_QCS8550固件编译.html]
 ---

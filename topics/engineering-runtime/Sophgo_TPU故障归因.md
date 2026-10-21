@@ -2,7 +2,7 @@
 title: Sophgo Qwen3-VL 异常退出后的 TPU hang
 created: 2026-04-13
 updated: 2026-04-23
-status: draft
+status: ready
 blog: true
 tags: [Sophgo, Qwen3-VL, TPU, GDB, 异常退出, 故障定位]
 ---

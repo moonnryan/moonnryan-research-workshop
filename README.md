@@ -4,6 +4,8 @@
 
 这个仓库既保存可持续修订的技术笔记，也提供一个基于 VitePress 的博客界面。Markdown 是正文的唯一来源；文章中的关键代码、公式、表格、流程图和算法图都随仓库保存，可以脱离本地项目独立阅读。
 
+在线阅读：[moonnryan.github.io](https://moonnryan.github.io/)
+
 ## 当前内容
 
 按工作时间整理了 2025 年 12 月至 2026 年 10 月的技术积累，共 33 篇：23 篇专题、10 篇教程。相近记录合并为同一问题的完整篇章，后续验证与结论修正也归入原文。
@@ -11,7 +13,7 @@
 - [按工作时间阅读全部内容](indexes/chronology.md)
 - 按设备阅读：[Sophgo](indexes/hardware/sophgo.md)、[Intel](indexes/hardware/intel.md)、[Ascend](indexes/hardware/ascend.md)、[NVIDIA](indexes/hardware/nvidia.md)、[Qualcomm](indexes/hardware/qualcomm.md)、[Rockchip](indexes/hardware/rockchip.md)
 
-内容覆盖 VLM 数据与 SFT、模型量化、计算图改写、异构执行、设备维护、视频时序、端侧会话和多平台训练。当前整理稿保留 `draft`，逐篇审阅后转为 `ready`。未完成的验证与研究假设会在文中说明。
+内容覆盖 VLM 数据与 SFT、模型量化、计算图改写、异构执行、设备维护、视频时序、端侧会话和多平台训练。当前 33 篇已纳入公开网站，新增草稿在本地审阅后再发布。未完成的验证与研究假设会在文中说明。
 
 ## 仓库结构
 
@@ -83,6 +85,12 @@ npm run dev -- --host 0.0.0.0
 | `npm run index` | 按元数据更新时间与硬件索引 |
 
 构建结果位于 `site/dist/`。网站代码、生成规则和路径前缀设置见 [site/README.md](site/README.md)。
+
+## 网站部署
+
+网站通过 [GitHub Actions](https://github.com/moonnryan/moonnryan.github.io/actions) 发布到 GitHub Pages。推送到 `main` 后，工作流自动构建公开版本并部署；构建或内容检查失败时不会进入部署步骤。仓库 Settings → Pages 的 Source 使用 **GitHub Actions**。
+
+本地仓库的远程地址为 `git@github.com:moonnryan/moonnryan.github.io.git`，文件夹名称不影响部署。配置细节见 [网站部署说明](site/README.md#github-pages)。
 
 ## 写作约定
 

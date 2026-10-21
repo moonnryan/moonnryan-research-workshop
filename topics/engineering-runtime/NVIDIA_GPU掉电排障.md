@@ -2,7 +2,7 @@
 title: NVIDIA GPU 负载下整机掉电的分层排查
 created: 2026-06-23
 updated: 2026-06-24
-status: draft
+status: ready
 blog: true
 tags: [NVIDIA, GPU, vLLM, 硬件, 故障定位, PCIe]
 ---

@@ -2,8 +2,8 @@
 title: Sophgo 模型编译部署教程
 created: 2025-12-03
 updated: 2026-04-22
-status: draft
-blog: false
+status: ready
+blog: true
 tags: [Sophgo, TPU-MLIR, SAIL, Qwen3-VL, YOLOv5]
 aliases: [/assets/tutorial/Sophgo_模型编译部署教程.html]
 ---

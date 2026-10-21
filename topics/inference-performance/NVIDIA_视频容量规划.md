@@ -2,7 +2,7 @@
 title: NVIDIA 多路视频 AI 的资源预算与容量规划
 created: 2026-08-04
 updated: 2026-08-04
-status: draft
+status: ready
 blog: true
 tags: [NVIDIA, NVDEC, NVENC, 视频, 容量规划, 性能]
 ---

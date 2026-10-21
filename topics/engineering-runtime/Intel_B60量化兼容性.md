@@ -2,7 +2,7 @@
 title: Intel B60 的量化模型与优化路径兼容性
 created: 2026-08-12
 updated: 2026-08-12
-status: draft
+status: ready
 blog: true
 tags: [Intel, B60, Qwen3.5, GPTQ, vLLM, KV Cache]
 ---

@@ -2,7 +2,7 @@
 title: TensorRT FP16 数值异常排查：QKV 布局的等价改写
 created: 2026-09-09
 updated: 2026-09-09
-status: draft
+status: ready
 blog: true
 tags: [NVIDIA, TensorRT, EdgeCrafter, ONNX, 图优化]
 ---

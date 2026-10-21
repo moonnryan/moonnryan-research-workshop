@@ -2,7 +2,7 @@
 title: AMD Qwen3.5 训练的故障定位与性能优化
 created: 2026-09-22
 updated: 2026-09-23
-status: draft
+status: ready
 blog: true
 tags: [AMD, R9700, ROCm, Qwen3.5, hipBLASLt]
 ---
