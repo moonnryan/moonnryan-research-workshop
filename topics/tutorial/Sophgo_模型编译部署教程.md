@@ -5,6 +5,7 @@ updated: 2026-04-22
 status: draft
 blog: false
 tags: [Sophgo, TPU-MLIR, SAIL, Qwen3-VL, YOLOv5]
+aliases: [/assets/tutorial/Sophgo_模型编译部署教程.html]
 ---
 
 # Sophgo 模型编译部署教程

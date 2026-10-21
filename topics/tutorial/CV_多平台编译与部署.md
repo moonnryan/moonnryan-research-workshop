@@ -4,7 +4,7 @@ created: 2026-01-29
 updated: 2026-10-08
 status: draft
 blog: false
-aliases: [/assets/tutorial/YOLO_多平台训练部署教程.html, /topics/quantization-accuracy/NVIDIA_TensorRT量化边界.html]
+aliases: [/assets/tutorial/CV_多平台编译与部署.html, /assets/tutorial/YOLO_多平台训练部署教程.html, /topics/quantization-accuracy/NVIDIA_TensorRT量化边界.html]
 tags: [CV, YOLO, DEIMv2, EdgeCrafter, InsightFace, NVIDIA, Ascend, Sophgo, Rockchip, Qualcomm, TensorRT, INT8, QDQ, 部署]
 ---
 
@@ -12,7 +12,7 @@ tags: [CV, YOLO, DEIMv2, EdgeCrafter, InsightFace, NVIDIA, Ascend, Sophgo, Rockc
 
 平台编译从已经验证的 ONNX 接口出发，将模型转换成目标设备可加载的产物。统一的脚本入口可以减少重复操作，但 shape、量化、前处理融合和运行时依赖仍由后端与模型共同决定。
 
-本文承接 [CV 模型 ONNX 导出与验证](CV_ONNX导出与验证.md)，按后端组织操作，集中说明模型差异。训练流程见 [CV 模型训练与微调](CV_训练与微调.md)，详细尺寸和接口见 [CV 多平台部署约束矩阵](../matrices/CV_多平台部署约束.md)。
+本文承接 [CV 模型 ONNX 导出与验证](CV_ONNX导出与验证.md)，按后端组织操作，集中说明模型差异。训练流程见 [CV 模型训练与微调](CV_训练与微调.md)。
 
 # 一、准备模型、基线与编译环境
 

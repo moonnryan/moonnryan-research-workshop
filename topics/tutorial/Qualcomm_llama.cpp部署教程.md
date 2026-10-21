@@ -5,7 +5,7 @@ updated: 2026-09-09
 status: draft
 blog: true
 tags: [Qualcomm, llama.cpp, Hexagon, OpenCL, ABI, GGUF, 量化, 性能]
-aliases: [/topics/inference-performance/Qualcomm_llama.cpp性能边界.html]
+aliases: [/assets/tutorial/Qualcomm_llama.cpp部署教程.html, /topics/inference-performance/Qualcomm_llama.cpp性能边界.html]
 ---
 
 # Qualcomm llama.cpp 部署与性能分析

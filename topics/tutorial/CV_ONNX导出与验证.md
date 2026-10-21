@@ -5,13 +5,14 @@ updated: 2026-10-08
 status: draft
 blog: false
 tags: [CV, YOLO, DEIMv2, EdgeCrafter, InsightFace, ONNX, 导出]
+aliases: [/assets/tutorial/CV_ONNX导出与验证.html]
 ---
 
 # CV 模型 ONNX 导出与验证
 
 ONNX 是训练与平台编译之间的接口。它需要固定的不只是网络权重，还包括输入名称与 dtype、图像前处理、输出语义，以及哪些后处理已经包含在图中。不同模型都叫目标检测，也不代表它们共享输入输出。
 
-本文承接 [CV 模型训练与微调](CV_训练与微调.md)，以静态 batch=1 建立可检查的导出基线。通过数值验证后，再进入 [多平台编译与部署](CV_多平台编译与部署.md)。更完整的模型尺寸和平台限制见 [CV 多平台部署约束矩阵](../matrices/CV_多平台部署约束.md)。
+本文承接 [CV 模型训练与微调](CV_训练与微调.md)，以静态 batch=1 建立可检查的导出基线。通过数值验证后，再进入 [多平台编译与部署](CV_多平台编译与部署.md)。
 
 # 一、选择权重与导出边界
 

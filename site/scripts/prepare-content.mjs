@@ -15,7 +15,6 @@ const names = {
   'inference-performance': '推理与性能',
   'engineering-runtime': '工程与运行环境',
   tutorial: '操作教程',
-  matrices: '约束矩阵',
 }
 
 async function files(directory) {
@@ -75,7 +74,7 @@ await copyChanged(path.join(repository, 'assets', 'media'), path.join(destinatio
 
 const articles = []
 const selectedFiles = new Set()
-for (const source of [...await files(path.join(repository, 'topics')), ...await files(path.join(repository, 'assets', 'tutorial')), ...await files(path.join(repository, 'assets', 'matrices'))]) {
+for (const source of await files(path.join(repository, 'topics'))) {
   const text = await fs.readFile(source, 'utf8')
   const { data, content } = matter(text)
   if (!preview && !(data.blog === true && data.status === 'ready')) continue
@@ -114,9 +113,9 @@ for (const source of [...await files(path.join(repository, 'topics')), ...await 
     categoryName: article.categoryName,
     minutes: article.minutes,
   }))
-  // Retain old article URLs after a split without duplicating list entries.
+  // Retain old URLs after moves and merges without duplicating list entries.
   for (const alias of data.aliases ?? []) {
-    if (typeof alias !== 'string' || !/^\/(?:assets\/(?:tutorial|matrices)|topics\/[a-z-]+)\/[^/]+\.html$/.test(alias)) {
+    if (typeof alias !== 'string' || !/^\/(?:assets\/tutorial|topics\/[a-z-]+)\/[^/]+\.html$/.test(alias)) {
       throw new Error(`Invalid article alias: ${alias}`)
     }
     const aliasFile = path.join(destination, alias.slice(1).replace(/\.html$/, '.md'))
@@ -134,7 +133,7 @@ for (const source of [...await files(path.join(repository, 'topics')), ...await 
   }
 }
 articles.sort((a, b) => b.updated.localeCompare(a.updated) || a.title.localeCompare(b.title, 'zh-CN'))
-for (const directory of ['topics', 'assets/tutorial', 'assets/matrices']) {
+for (const directory of ['topics', 'assets']) {
   const target = path.join(destination, directory)
   try {
     for (const file of await files(target)) if (!selectedFiles.has(file)) await fs.rm(file)

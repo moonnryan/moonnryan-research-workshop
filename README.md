@@ -6,12 +6,11 @@
 
 ## 当前内容
 
-按工作时间整理了 2025 年 12 月至 2026 年 10 月的技术积累，共 38 篇：25 篇专题、12 篇教程和 1 份约束矩阵。相近记录合并为同一问题的完整篇章，后续验证与结论修正也归入原文。
+按工作时间整理了 2025 年 12 月至 2026 年 10 月的技术积累，共 37 篇：24 篇专题、13 篇教程。相近记录合并为同一问题的完整篇章，后续验证与结论修正也归入原文。
 
 - [按工作时间阅读全部内容](indexes/chronology.md)
 - [CV 训练、ONNX 导出与多平台部署](indexes/cv-workflow.md)
 - 按设备阅读：[Sophgo](indexes/hardware/sophgo.md)、[Intel](indexes/hardware/intel.md)、[Ascend](indexes/hardware/ascend.md)、[NVIDIA](indexes/hardware/nvidia.md)、[Qualcomm](indexes/hardware/qualcomm.md)、[Rockchip](indexes/hardware/rockchip.md)
-- [CV 多平台部署约束矩阵](assets/matrices/CV_多平台部署约束.md)
 
 内容覆盖 VLM 数据与 SFT、模型量化、计算图改写、异构执行、设备维护、视频时序、端侧会话和多平台训练。当前整理稿保留 `draft`，逐篇审阅后转为 `ready`。未完成的验证与研究假设会在文中说明。
 
@@ -19,22 +18,21 @@
 
 ```text
 moonnryan-research-workshop/
-├── topics/                 # 围绕一个技术问题展开的分析文章
+├── topics/                 # 专题分析与操作教程
 │   ├── data-evaluation/
 │   ├── models-training/
 │   ├── graphs-operators/
 │   ├── quantization-accuracy/
 │   ├── inference-performance/
-│   └── engineering-runtime/
+│   ├── engineering-runtime/
+│   └── tutorial/           # 可复现的完整操作流程
 ├── assets/
-│   ├── tutorial/           # 可复现的完整操作流程
-│   ├── matrices/           # 平台、模型与工具链约束矩阵
 │   └── media/              # 图片及其可编辑源文件
 ├── indexes/                # 按硬件或主题组织的导航
 └── site/                   # VitePress 网站、构建脚本与主题
 ```
 
-主题目录先直接放文章，只有在内容规模确实增长后再增加层级。教程和约束矩阵属于可复用资产，与围绕问题展开的主题文章分开维护。
+正文统一放在 topics 下，操作教程集中在 topics/tutorial，其余目录按技术主题组织。图片与可编辑源文件放在 assets/media。
 
 ## 文档元数据
 
@@ -51,7 +49,7 @@ tags: [模型, 平台, 主题]
 ---
 ```
 
-`blog` 表示文章是否适合公开展示，`status` 表示是否已通过发布审阅。公开构建只收录同时满足 `blog: true` 和 `status: ready` 的文档；本地预览显示全部草稿、教程和矩阵。
+`blog` 表示文章是否适合公开展示，`status` 表示是否已通过发布审阅。公开构建只收录同时满足 `blog: true` 和 `status: ready` 的文档；本地预览显示全部草稿与教程。
 
 `created` 采用对应工作的首次日期，`updated` 表示材料中后续验证的日期。无法确认原始实验日期时使用整理日期并在文中注明。新增材料前先检查同主题篇章，能补入原文的内容优先合并。
 

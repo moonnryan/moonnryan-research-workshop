@@ -5,6 +5,7 @@ updated: 2026-09-02
 status: draft
 blog: true
 tags: [Qualcomm, QCS9075, GenieX, GGUF, QAIRT, 多模态, 部署]
+aliases: [/assets/tutorial/Qualcomm_GenieX部署.html]
 ---
 
 # Qualcomm GenieX 的 GGUF 与 QAIRT 部署

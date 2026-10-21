@@ -5,6 +5,7 @@ updated: 2026-06-09
 status: draft
 blog: false
 tags: [NVIDIA, AGX Orin, Jetson, JetPack, CUDA, TensorRT, ABI]
+aliases: [/assets/tutorial/NVIDIA_AGX部署与TensorRT.html]
 ---
 
 # NVIDIA AGX Orin 系统与 TensorRT 环境部署

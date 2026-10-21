@@ -23,8 +23,7 @@ async function prepare() {
   if (pending) { pending = false; await prepare() }
 }
 const directories = [
-  path.join(repository, 'topics'), path.join(repository, 'assets/tutorial'), path.join(repository, 'assets/media'),
-  path.join(repository, 'assets/matrices'),
+  path.join(repository, 'topics'), path.join(repository, 'assets/media'),
   path.join(site, 'app'), path.join(site, 'pages'),
 ]
 async function fingerprint(directory) {

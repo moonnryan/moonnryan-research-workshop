@@ -4,13 +4,12 @@
 
 | 日期 | 内容 |
 | --- | --- |
-| 2026-01-29 | [CV 模型多平台编译与部署](../../assets/tutorial/CV_多平台编译与部署.md) |
-| 2026-01-29 | [CV 模型训练与微调](../../assets/tutorial/CV_训练与微调.md) |
-| 2026-03-30 | [NVIDIA AGX Orin 系统与 TensorRT 环境部署](../../assets/tutorial/NVIDIA_AGX部署与TensorRT.md) |
+| 2026-01-29 | [CV 模型多平台编译与部署](../../topics/tutorial/CV_多平台编译与部署.md) |
+| 2026-01-29 | [CV 模型训练与微调](../../topics/tutorial/CV_训练与微调.md) |
+| 2026-03-30 | [NVIDIA AGX Orin 系统与 TensorRT 环境部署](../../topics/tutorial/NVIDIA_AGX部署与TensorRT.md) |
 | 2026-04-28 | [多平台模型任务的版本与产物管理](../../topics/engineering-runtime/多平台_任务与产物管理.md) |
 | 2026-06-23 | [NVIDIA GPU 负载下整机掉电的分层排查](../../topics/engineering-runtime/NVIDIA_GPU掉电排障.md) |
 | 2026-08-04 | [NVIDIA 多路视频 AI 的资源预算与容量规划](../../topics/inference-performance/NVIDIA_视频容量规划.md) |
-| 2026-08-10 | [CV 多平台部署约束矩阵](../../assets/matrices/CV_多平台部署约束.md) |
 | 2026-09-09 | [TensorRT FP16 数值异常排查：QKV 布局的等价改写](../../topics/graphs-operators/NVIDIA_QKV布局与融合.md) |
 | 2026-09-21 | [视觉 patch embedding 的等价改写：从 Conv3D 到 Linear](../../topics/graphs-operators/AMD_Conv3D等价改写.md) |
 | 2026-10-20 | [NVIDIA KV Cache 量化中的 NVFP4 与 TurboQuant](../../topics/quantization-accuracy/NVIDIA_KV缓存量化.md) |

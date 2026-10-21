@@ -5,6 +5,7 @@ updated: 2026-01-22
 status: draft
 blog: false
 tags: [Intel, B60, XPU, vLLM, Qwen3-VL]
+aliases: [/assets/tutorial/Intel_B60_vLLM部署教程.html]
 ---
 
 # Intel B60 上的 Qwen3-VL vLLM 部署

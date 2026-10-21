@@ -5,6 +5,7 @@ updated: 2026-06-12
 status: draft
 blog: false
 tags: [Rockchip, RK3576, RKNN, ONNX, 环境配置, 部署]
+aliases: [/assets/tutorial/Rockchip_RKNN环境与推理.html]
 ---
 
 # Rockchip RKNN 环境搭建与板端推理

@@ -5,6 +5,7 @@ updated: 2026-10-09
 status: draft
 blog: false
 tags: [CV, YOLO, DEIMv2, EdgeCrafter, NVIDIA, AMD, Ascend, 微调]
+aliases: [/assets/tutorial/CV_训练与微调.html]
 ---
 
 # CV 模型训练与微调

@@ -5,6 +5,7 @@ updated: 2026-09-09
 status: draft
 blog: true
 tags: [Qualcomm, QCS9075, MNN, Hexagon, OpenCL, 量化, 部署]
+aliases: [/assets/tutorial/Qualcomm_MNN编译与部署.html]
 ---
 
 # Qualcomm MNN 本地编译与模型部署

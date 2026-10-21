@@ -1,6 +1,6 @@
 # Research Workshop · Website
 
-基于 VitePress 的个人知识库与博客界面，包含首页、文章列表、阅读页和关于页。原始 Markdown 保持在上级 `topics/`、`assets/tutorial/` 与 `assets/matrices/`，网页内容按构建模式自动生成。
+基于 VitePress 的个人知识库与博客界面，包含首页、文章列表、阅读页和关于页。原始 Markdown 保持在上级 `topics/`，其中操作教程集中在 `topics/tutorial/`，网页内容按构建模式自动生成。
 
 ## 本地预览
 
