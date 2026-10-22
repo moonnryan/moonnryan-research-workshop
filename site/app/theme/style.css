@@ -311,7 +311,9 @@ html { scrollbar-gutter: stable; }
 html:has(.topic-dialog[open]) { overflow: hidden; }
 .expanded-bubble { position: relative; overflow: hidden; clip-path: ellipse(50% 50%); width: min(820px, calc(100vw - 32px)); height: min(820px, calc(100dvh - 40px)); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 18px; padding: 65px 65px 30px; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); box-shadow: 0 24px 90px #00000020; transform-origin: center; }
 .expanded-bubble-heading { text-align: center; }
+.bubble-morph-surface { position: absolute; inset: 0; border-radius: inherit; background-color: var(--paper); opacity: 0; pointer-events: none; }
 .bubble-morph-face { position: absolute; left: 50%; top: 50%; opacity: 0; pointer-events: none; transform-origin: center; }
+.expanded-bubble-heading, .tag-orbit, .bubble-destination { position: relative; }
 .expanded-bubble-heading h2 { font-size: 27px; line-height: 1.5; font-weight: 550; margin: 0; }
 .expanded-bubble-heading p { color: var(--muted); font-size: 12px; margin: 8px 0 0; }
 .tag-orbit { position: relative; min-height: 0; overflow: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: none; mask-image: linear-gradient(transparent, #000 9px, #000 calc(100% - 9px), transparent); }

@@ -11,6 +11,7 @@ const activeKey = ref('')
 const selectedTags = ref<string[]>([])
 const dialog = ref<HTMLDialogElement>()
 const compactFace = ref<HTMLElement>()
+const morphSurface = ref<HTMLElement>()
 const hiddenSource = ref('')
 const phase = ref<'closed' | 'opening' | 'open' | 'closing'>('closed')
 const active = computed(() => groups.value.find(group => group.key === activeKey.value))
@@ -22,6 +23,7 @@ let version = 0
 let morph: Animation | undefined
 let contentAnimations: Animation[] = []
 let faceAnimation: Animation | undefined
+let surfaceAnimation: Animation | undefined
 let faceFrame = 0
 
 function prepareFace(source?: HTMLElement) {
@@ -29,6 +31,11 @@ function prepareFace(source?: HTMLElement) {
   const button = source?.querySelector('button')
   if (!face || !source || !button) return
   const rect = source.getBoundingClientRect()
+  const appearance = getComputedStyle(button)
+  if (morphSurface.value) {
+    morphSurface.value.style.backgroundImage = appearance.backgroundImage
+    morphSurface.value.style.boxShadow = appearance.boxShadow
+  }
   face.style.width = `${rect.width}px`
   face.style.height = `${rect.height}px`
   face.style.setProperty('--bubble-diameter', `${rect.width}px`)
@@ -54,12 +61,21 @@ function animateFace(opening: boolean, currentOpacity = '0') {
   faceAnimation = face.animate([
     { opacity: opening ? 1 : currentOpacity },
     { opacity: opening ? 0 : 1 },
-  ], { duration: opening ? 300 : 240, easing: opening ? 'cubic-bezier(.4, 0, 1, 1)' : easing, fill: 'both' })
+  ], { duration: opening ? 100 : 240, easing, fill: 'both' })
+}
+
+function animateSurface(opening: boolean, currentOpacity = '0') {
+  surfaceAnimation?.cancel()
+  surfaceAnimation = morphSurface.value!.animate([
+    { opacity: opening ? 1 : currentOpacity },
+    { opacity: opening ? 0 : 1 },
+  ], { duration: opening ? 620 : 420, easing, fill: 'both' })
 }
 
 function stopFace() {
   cancelAnimationFrame(faceFrame)
   faceAnimation?.cancel()
+  surfaceAnimation?.cancel()
 }
 
 function sourceElement(key = activeKey.value) {
@@ -115,6 +131,7 @@ async function openGroup(key: string, origin?: DOMRect) {
       { transform: source ? transformFrom(source, target) : 'scale(.96)' },
       { transform: 'none' },
     ], { duration: 620, easing, fill: 'both' })
+    animateSurface(true)
     animateFace(true)
     animateContent(true)
     await morph.finished.catch(() => {})
@@ -135,6 +152,7 @@ async function closeGroup() {
   const target = dialog.value.getBoundingClientRect()
   const destination = sourceElement()?.getBoundingClientRect()
   const faceOpacity = compactFace.value ? getComputedStyle(compactFace.value).opacity : '0'
+  const surfaceOpacity = morphSurface.value ? getComputedStyle(morphSurface.value).opacity : '0'
   morph?.cancel()
   dialog.value.style.setProperty('--backdrop-from', backdrop)
   phase.value = 'closing'
@@ -143,6 +161,7 @@ async function closeGroup() {
       { transform: current },
       { transform: destination ? transformFrom(destination, target) : 'scale(.96)' },
     ], { duration: 420, easing, fill: 'both' })
+    animateSurface(false, surfaceOpacity)
     animateFace(false, faceOpacity)
     animateContent(false)
     await morph.finished.catch(() => {})
@@ -199,6 +218,7 @@ onUnmounted(() => {
     <BubbleField :items="topicBubbles" kind="topics" :paused="!!activeKey" :hidden-id="hiddenSource" @activate="openGroup" />
     <dialog ref="dialog" class="topic-dialog" :data-phase="phase" autofocus aria-labelledby="bubble-dialog-title" aria-describedby="bubble-dismiss-hint" @close="afterClose" @cancel.prevent="closeGroup()" @pointerdown="dismissOutside">
       <div v-if="active" class="expanded-bubble">
+        <div ref="morphSurface" class="bubble-morph-surface" aria-hidden="true"></div>
         <div ref="compactFace" class="bubble-morph-face" aria-hidden="true" inert></div>
         <span id="bubble-dismiss-hint" class="visually-hidden">点击圆圈外或按 Escape 关闭</span>
         <div class="expanded-bubble-heading"><h2 id="bubble-dialog-title">{{ active.name }}</h2><p>{{ active.count }} 篇文章<span> · {{ selectedTags.length ? '匹配任一已选标签' : '选择标签，可多选' }}</span></p></div>
