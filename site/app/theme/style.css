@@ -138,9 +138,10 @@ a, button, input { -webkit-tap-highlight-color: transparent; }
 .category-filters button { background: transparent; border: 1px solid transparent; color: var(--muted); font-size: 13px; padding: 6px 11px; border-radius: 4px; }
 .category-filters button.selected { background: var(--selected); color: var(--selected-ink); }
 .category-filters button:hover { color: var(--ink); }
-.search-field { display: flex; align-items: center; gap: 8px; min-width: 185px; }
+.search-field { display: flex; align-items: center; gap: 8px; min-width: 0; flex-shrink: 0; }
 .search-field svg { width: 15px; height: 15px; stroke: var(--soft-ink); fill: none; stroke-width: 1.6; }
-.search-field input { width: 165px; min-width: 0; border: 0; background: transparent; outline-offset: 5px; font-size: 14px; color: var(--ink); padding: 5px 0; }
+.search-field input { width: 8em; min-width: 0; border: 0; background: transparent; outline-offset: 5px; font-size: 14px; color: var(--ink); padding: 5px 0; text-align: right; }
+.search-field input:placeholder-shown::-webkit-search-cancel-button { display: none; }
 .search-field input::placeholder { color: var(--muted); }
 .list-article { display: flex; justify-content: space-between; gap: 30px; padding: 29px 0; border-bottom: 1px solid var(--line); }
 .list-article-main { max-width: 790px; }
