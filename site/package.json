@@ -9,7 +9,7 @@
     "build": "node scripts/prepare-content.mjs && vitepress build content",
     "build:preview": "node scripts/prepare-content.mjs --preview && vitepress build content",
     "preview": "vitepress preview content --host 127.0.0.1",
-    "check": "node scripts/check-content.mjs"
+    "check": "node scripts/check-content.mjs && node --test tests/bubble-physics.test.mjs"
   },
   "dependencies": {
     "gray-matter": "4.0.3",
