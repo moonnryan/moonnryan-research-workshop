@@ -263,7 +263,7 @@ a, button, input { -webkit-tap-highlight-color: transparent; }
 }
 
 /* Topic navigation and further reading share the site's paper and ink palette. */
-.related-section { grid-column: 1 / -1; min-width: 0; border-top: 1px solid var(--line); padding-top: 30px; }
+.related-section { grid-column: 1 / -1; min-width: 0; padding-top: 30px; }
 .related-heading, .topics-header { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; }
 .related-heading h2 { margin: 0; font-size: 25px; font-weight: 600; }
 .related-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 24px; }

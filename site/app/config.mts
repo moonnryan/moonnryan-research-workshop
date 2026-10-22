@@ -7,6 +7,8 @@ export default defineConfig({
   appearance: true,
   base: process.env.MRW_BASE || '/',
   cleanUrls: false,
+  // Match the custom layout's heading margin; the header scrolls with the page.
+  scrollOffset: 40,
   outDir: '../dist',
   markdown: {
     math: true,
