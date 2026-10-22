@@ -86,8 +86,8 @@ watch(activeHeading, async () => {
       <button class="menu-toggle" :aria-expanded="mobileOpen" aria-controls="main-navigation" @click="mobileOpen = !mobileOpen">菜单</button>
       <nav id="main-navigation" class="main-nav" :class="{ 'is-open': mobileOpen }" aria-label="主导航">
         <a :class="{ active: route.path === withBase('/') }" :href="withBase('/')">首页</a>
-        <a :class="{ active: isArticle || route.path.includes('/articles') }" :href="withBase('/articles.html')">文章</a>
         <a :class="{ active: frontmatter.layout === 'topics' }" :href="withBase('/topics.html')">主题</a>
+        <a :class="{ active: isArticle || route.path.includes('/articles') }" :href="withBase('/articles.html')">文章</a>
         <a :class="{ active: isAbout }" :href="withBase('/about.html')">关于</a>
         <a class="github-link" href="https://github.com/moonnryan" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
         <button class="appearance-toggle" type="button" aria-label="切换深浅色模式" title="切换深浅色模式" @click="isDark = !isDark">

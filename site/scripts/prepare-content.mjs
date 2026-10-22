@@ -2,20 +2,12 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import matter from 'gray-matter'
+import { topicLabels, normalizeTopic } from '../app/topic-groups.mjs'
 
 const site = path.resolve(fileURLToPath(new URL('..', import.meta.url)))
 const repository = path.dirname(site)
 const destination = path.join(site, 'content')
 const preview = process.argv.includes('--preview') || process.env.MRW_INCLUDE_DRAFTS === '1'
-const names = {
-  'data-evaluation': '数据与评测',
-  'models-training': '模型与训练',
-  'graphs-operators': '计算图与算子',
-  'quantization-accuracy': '量化与精度',
-  'inference-performance': '推理与性能',
-  'engineering-runtime': '工程与运行环境',
-  tutorial: '操作教程',
-}
 
 async function files(directory) {
   const result = []
@@ -79,7 +71,7 @@ for (const source of await files(path.join(repository, 'topics'))) {
   const { data, content } = matter(text)
   if (!preview && !(data.blog === true && data.status === 'ready')) continue
   const relative = path.relative(repository, source).split(path.sep).join('/')
-  const category = relative.split('/')[1]
+  const category = normalizeTopic(relative.split('/')[1])
   const body = content.replace(/```mermaid\s*\n([\s\S]*?)```/g, (_, diagram) => {
     const encoded = Buffer.from(diagram.trim()).toString('base64')
     return `<MermaidDiagram encoded="${encoded}" />`
@@ -93,7 +85,7 @@ for (const source of await files(path.join(repository, 'topics'))) {
     title: String(data.title ?? path.basename(source, '.md')),
     url: '/' + relative.replace(/\.md$/, '.html'),
     category,
-    categoryName: names[category] ?? category,
+    categoryName: topicLabels[category] ?? category,
     excerpt: excerpt(content),
     tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
     created,

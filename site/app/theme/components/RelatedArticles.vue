@@ -23,7 +23,7 @@ const related = computed(() => {
   <section v-if="current && related.length" class="related-section" aria-labelledby="related-title">
     <div class="related-heading">
       <h2 id="related-title">继续阅读</h2>
-      <a class="subtle-link" :href="withBase('/topics.html#' + current.category)">更多{{ current.categoryName }} →</a>
+      <a class="subtle-link" :href="withBase('/articles.html?topic=' + current.category)">更多{{ current.categoryName }} →</a>
     </div>
     <div class="related-grid">
       <a v-for="article in related" :key="article.url" class="related-card" :href="withBase(article.url)">

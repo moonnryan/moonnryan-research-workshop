@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { withBase } from 'vitepress'
-import { articles, categories } from '../content'
+import { articles, categories, countTags, filterUrl, normalizeTopic } from '../content'
 const query = ref('')
 const selected = ref('all')
-const selectedTag = ref('')
+const selectedTags = ref<string[]>([])
+const tagsExpanded = ref(false)
 const pageSize = 10
 const currentPage = ref(1)
 
 function readTag() {
   const params = new URLSearchParams(window.location.search)
-  selectedTag.value = params.get('tag') ?? ''
-  const topic = params.get('topic')
+  selectedTags.value = [...new Set(params.getAll('tag').filter(Boolean))]
+  const topic = normalizeTopic(params.get('topic'))
   selected.value = categories.some(([key]) => key === topic) ? topic! : 'all'
 }
 onMounted(() => {
@@ -24,18 +25,38 @@ onUnmounted(() => {
   window.removeEventListener('popstate', readTag)
 })
 
+function updateUrl() {
+  window.history.replaceState({}, '', filterUrl(selected.value, selectedTags.value))
+}
+
 function selectCategory(category: string) {
   selected.value = category
-  const params = new URLSearchParams(window.location.search)
-  if (category === 'all') params.delete('topic')
-  else params.set('topic', category)
-  const search = params.toString()
-  window.history.replaceState({}, '', withBase('/articles.html') + (search ? '?' + search : ''))
+  // Keep only labels available in the new topic so stale selections cannot hide every article.
+  const scope = articles.filter(article => category === 'all' || article.category === category)
+  selectedTags.value = selectedTags.value.filter(tag => scope.some(article => article.tags.includes(tag)))
+  tagsExpanded.value = false
+  updateUrl()
 }
+
+function toggleTag(tag: string) {
+  selectedTags.value = selectedTags.value.includes(tag)
+    ? selectedTags.value.filter(item => item !== tag)
+    : [...selectedTags.value, tag]
+  updateUrl()
+}
+
+function clearTags() {
+  selectedTags.value = []
+  updateUrl()
+}
+
+const topicArticles = computed(() => articles.filter(article => selected.value === 'all' || article.category === selected.value))
+const availableTags = computed(() => countTags(topicArticles.value))
+const visibleTags = computed(() => tagsExpanded.value ? availableTags.value : availableTags.value.filter(([tag], index) => index < 12 || selectedTags.value.includes(tag)))
 
 const filtered = computed(() => articles.filter(article => {
   const matchesCategory = selected.value === 'all' || article.category === selected.value
-  const matchesTag = !selectedTag.value || article.tags.includes(selectedTag.value)
+  const matchesTag = !selectedTags.value.length || selectedTags.value.some(tag => article.tags.includes(tag))
   const term = query.value.trim().toLowerCase()
   const searchable = [article.title, article.excerpt, article.categoryName, ...article.tags].join(' ').toLowerCase()
   return matchesCategory && matchesTag && (!term || searchable.includes(term))
@@ -46,7 +67,7 @@ const pageArticles = computed(() => {
   const start = (currentPage.value - 1) * pageSize
   return filtered.value.slice(start, start + pageSize)
 })
-watch([query, selected, selectedTag], () => { currentPage.value = 1 }, { flush: 'sync' })
+watch([query, selected, selectedTags], () => { currentPage.value = 1 }, { flush: 'sync' })
 watch(pageCount, count => { currentPage.value = Math.min(currentPage.value, count) }, { flush: 'sync' })
 
 function goToPage(page: number) {
@@ -57,7 +78,7 @@ function goToPage(page: number) {
 function clearFilters() {
   query.value = ''
   selected.value = 'all'
-  selectedTag.value = ''
+  selectedTags.value = []
   window.history.replaceState({}, '', withBase('/articles.html'))
 }
 </script>
@@ -69,7 +90,16 @@ function clearFilters() {
       <div class="category-filters" aria-label="按主题筛选"><button :class="{ selected: selected === 'all' }" @click="selectCategory('all')">全部</button><button v-for="[key, name] in categories" :key="key" :class="{ selected: selected === key }" @click="selectCategory(key)">{{ name }}</button></div>
       <div class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input v-model="query" type="search" aria-label="搜索文章" placeholder="搜索标题或关键词"></div>
     </div>
-    <div v-if="selectedTag" class="active-tag">标签 <strong>#{{ selectedTag }}</strong><button @click="clearFilters">清除</button></div>
+    <section class="listing-tags" aria-label="按标签筛选文章">
+      <div class="listing-tags-heading">
+        <span>标签 <span class="filter-hint">{{ selectedTags.length ? '匹配任一已选标签' : '可多选' }}</span></span>
+        <span class="tag-filter-actions"><span>{{ filtered.length }} 篇匹配</span><button v-if="selectedTags.length" @click="clearTags">清除标签</button></span>
+      </div>
+      <div class="filter-tag-options">
+        <button v-for="[tag, count] in visibleTags" :key="tag" :aria-pressed="selectedTags.includes(tag)" :class="{ selected: selectedTags.includes(tag) }" @click="toggleTag(tag)"><span>#{{ tag }}</span><span class="tag-count">{{ count }}</span><span v-if="selectedTags.includes(tag)" aria-hidden="true">✓</span></button>
+      </div>
+      <button v-if="availableTags.length > 12" class="expand-tags" :aria-expanded="tagsExpanded" @click="tagsExpanded = !tagsExpanded">{{ tagsExpanded ? '收起标签 ↑' : `全部 ${availableTags.length} 个标签 ↓` }}</button>
+    </section>
     <div v-if="filtered.length" class="all-articles">
       <article v-for="article in pageArticles" :key="article.url" class="list-article">
         <div class="list-article-main"><div class="card-meta"><span>{{ article.categoryName }}</span><span class="meta-dot">·</span><span>约 {{ article.minutes }} 分钟</span></div><h2><a :href="withBase(article.url)">{{ article.title }}</a></h2><p><a :href="withBase(article.url)">{{ article.excerpt }}</a></p><div class="article-tags"><a v-for="tag in article.tags" :key="tag" :href="withBase('/articles.html?tag=' + encodeURIComponent(tag))">{{ tag }}</a></div></div>
