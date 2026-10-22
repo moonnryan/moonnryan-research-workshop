@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { withBase } from 'vitepress'
 import { articles, categories, countTags, filterUrl, normalizeTopic } from '../content'
 const query = ref('')
@@ -70,8 +70,14 @@ const pageArticles = computed(() => {
 watch([query, selected, selectedTags], () => { currentPage.value = 1 }, { flush: 'sync' })
 watch(pageCount, count => { currentPage.value = Math.min(currentPage.value, count) }, { flush: 'sync' })
 
-function goToPage(page: number) {
+async function goToPage(page: number) {
+  const pagination = document.querySelector<HTMLElement>('.article-pagination')
+  const previousTop = pagination?.getBoundingClientRect().top
   currentPage.value = Math.min(Math.max(page, 1), pageCount.value)
+  await nextTick()
+  if (pagination && previousTop !== undefined) {
+    window.scrollBy({ top: pagination.getBoundingClientRect().top - previousTop, behavior: 'instant' })
+  }
 }
 
 function clearFilters() {
