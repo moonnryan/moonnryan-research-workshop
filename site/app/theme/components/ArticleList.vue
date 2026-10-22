@@ -72,7 +72,6 @@ watch(pageCount, count => { currentPage.value = Math.min(currentPage.value, coun
 
 function goToPage(page: number) {
   currentPage.value = Math.min(Math.max(page, 1), pageCount.value)
-  document.getElementById('listing-title')?.scrollIntoView({ block: 'start' })
 }
 
 function clearFilters() {
