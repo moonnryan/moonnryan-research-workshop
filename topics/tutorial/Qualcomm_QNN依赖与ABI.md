@@ -4,7 +4,7 @@ created: 2026-07-24
 updated: 2026-09-24
 status: ready
 blog: true
-tags: [Qualcomm, QNN, ONNX Runtime, ABI, EPContext, Plugin EP]
+tags: [Qualcomm, QNN, ONNX Runtime, ABI, EPContext, Plugin EP, 部署]
 aliases: [/topics/engineering-runtime/Qualcomm_QNN依赖与ABI.html, /topics/engineering-runtime/Qualcomm_ORT插件注册.html]
 ---
 

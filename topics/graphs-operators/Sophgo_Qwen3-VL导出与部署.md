@@ -4,7 +4,7 @@ created: 2025-12-24
 updated: 2025-12-26
 status: ready
 blog: true
-tags: [Sophgo, SE8, BM1684X, TPU-MLIR, Qwen3-VL, 模型导出, 多设备]
+tags: [Sophgo, SE8, BM1684X, TPU-MLIR, Qwen3-VL, 模型导出, 多设备, 部署]
 ---
 
 # Sophgo Qwen3-VL 子图导出与部署边界

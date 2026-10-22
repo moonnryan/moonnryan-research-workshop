@@ -4,7 +4,7 @@ created: 2026-05-19
 updated: 2026-07-23
 status: ready
 blog: true
-tags: [Ascend, 910B, SAM3, ONNX, OM, 动态形状, 子图, 批处理]
+tags: [Ascend, 910B, SAM3, ONNX, 动态形状, 子图, 批处理]
 ---
 
 # Ascend SAM3 的图文配对与动态编译

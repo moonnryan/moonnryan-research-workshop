@@ -4,7 +4,7 @@ created: 2026-07-02
 updated: 2026-07-22
 status: ready
 blog: true
-tags: [Qwen3.5, SFT, JSON, JSON Schema, VLM, 评测]
+tags: [Qwen3.5, SFT, 结构化输出, 多模态, 评测]
 ---
 
 # Qwen 小模型的结构化输出与任务评测

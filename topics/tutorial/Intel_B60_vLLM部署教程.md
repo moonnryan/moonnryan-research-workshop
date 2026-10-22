@@ -4,7 +4,7 @@ created: 2025-12-11
 updated: 2026-01-22
 status: ready
 blog: true
-tags: [Intel, B60, XPU, vLLM, Qwen3-VL]
+tags: [Intel, B60, vLLM, Qwen3-VL, 部署]
 aliases: [/assets/tutorial/Intel_B60_vLLM部署教程.html]
 ---
 

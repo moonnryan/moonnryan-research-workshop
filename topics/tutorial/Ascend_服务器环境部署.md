@@ -4,7 +4,7 @@ created: 2026-01-05
 updated: 2026-08-18
 status: ready
 blog: true
-tags: [Ascend, 910B, 310P, Linux, CANN, 驱动, 维护]
+tags: [Ascend, 910B, 310P, CANN, 驱动, 部署]
 aliases: [/assets/tutorial/Ascend_服务器环境部署.html, /assets/tutorial/Ascend_服务器信息查询.html, /assets/tutorial/Ascend_设备生命周期.html]
 ---
 

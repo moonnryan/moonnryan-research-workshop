@@ -4,7 +4,7 @@ created: 2026-08-07
 updated: 2026-08-13
 status: ready
 blog: true
-tags: [Ascend, 910B, 驱动, CANN, 异步执行]
+tags: [Ascend, 910B, 驱动, CANN, 异步执行, 故障定位]
 ---
 
 # Ascend 910B 驱动异常与异步错误定位

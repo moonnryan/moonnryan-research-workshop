@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress'
 import { articles } from '../content'
-const recent = articles.slice(0, 3)
+const recent = articles.slice(0, 5)
 </script>
 
 <template>
@@ -16,7 +16,7 @@ const recent = articles.slice(0, 3)
     </section>
 
     <section class="recent-section" aria-labelledby="recent-title">
-      <div class="section-heading"><div><span class="section-eyebrow">LATEST NOTES</span><h2 id="recent-title">近期文章</h2></div><a class="subtle-link" :href="withBase('/articles.html')">全部文章 <span aria-hidden="true">↗</span></a></div>
+      <div class="section-heading"><div><h2 id="recent-title">近期文章</h2></div><a class="subtle-link" :href="withBase('/articles.html')">全部文章 <span aria-hidden="true">↗</span></a></div>
       <div v-if="recent.length" class="recent-list">
         <a v-for="(article, index) in recent" :key="article.url" class="recent-item" :href="withBase(article.url)">
           <span class="article-number">{{ String(index + 1).padStart(2, '0') }}</span>

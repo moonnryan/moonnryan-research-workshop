@@ -4,7 +4,7 @@ created: 2026-08-04
 updated: 2026-08-04
 status: ready
 blog: true
-tags: [NVIDIA, NVDEC, NVENC, 视频, 容量规划, 性能]
+tags: [NVIDIA, 视频编解码, 视频, 容量规划, 性能]
 ---
 
 # NVIDIA 多路视频 AI 的资源预算与容量规划

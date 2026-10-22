@@ -4,7 +4,7 @@ created: 2026-07-23
 updated: 2026-09-09
 status: ready
 blog: true
-tags: [Qualcomm, llama.cpp, Hexagon, OpenCL, ABI, GGUF, 量化, 性能]
+tags: [Qualcomm, llama.cpp, Hexagon, OpenCL, ABI, GGUF, 量化, 性能, 部署]
 aliases: [/assets/tutorial/Qualcomm_llama.cpp部署教程.html, /topics/inference-performance/Qualcomm_llama.cpp性能边界.html]
 ---
 

@@ -4,7 +4,7 @@ created: 2026-03-30
 updated: 2026-06-09
 status: ready
 blog: true
-tags: [NVIDIA, AGX Orin, Jetson, JetPack, CUDA, TensorRT, ABI]
+tags: [NVIDIA, AGX Orin, Jetson, JetPack, CUDA, TensorRT, ABI, 部署]
 aliases: [/assets/tutorial/NVIDIA_AGX部署与TensorRT.html]
 ---
 

@@ -4,7 +4,7 @@ created: 2026-06-10
 updated: 2026-06-12
 status: ready
 blog: true
-tags: [Rockchip, RK3576, RKNN, ONNX, 环境配置, 部署]
+tags: [Rockchip, RK3576, RKNN, ONNX, 部署]
 aliases: [/assets/tutorial/Rockchip_RKNN环境与推理.html]
 ---
 
