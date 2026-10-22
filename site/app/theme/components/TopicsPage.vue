@@ -10,6 +10,8 @@ const groups = computed(() => categories.map(([key, name]) => {
 const activeKey = ref('')
 const selectedTags = ref<string[]>([])
 const dialog = ref<HTMLDialogElement>()
+const compactFace = ref<HTMLElement>()
+const hiddenSource = ref('')
 const phase = ref<'closed' | 'opening' | 'open' | 'closing'>('closed')
 const active = computed(() => groups.value.find(group => group.key === activeKey.value))
 const matchingCount = computed(() => active.value?.items.filter(article => !selectedTags.value.length || selectedTags.value.some(tag => article.tags.includes(tag))).length ?? 0)
@@ -19,6 +21,46 @@ const easing = 'cubic-bezier(.16, 1, .3, 1)'
 let version = 0
 let morph: Animation | undefined
 let contentAnimations: Animation[] = []
+let faceAnimation: Animation | undefined
+let faceFrame = 0
+
+function prepareFace(source?: HTMLElement) {
+  const face = compactFace.value
+  const button = source?.querySelector('button')
+  if (!face || !source || !button) return
+  const rect = source.getBoundingClientRect()
+  face.style.width = `${rect.width}px`
+  face.style.height = `${rect.height}px`
+  face.style.setProperty('--bubble-diameter', `${rect.width}px`)
+  const copy = button.cloneNode(true) as HTMLButtonElement
+  copy.tabIndex = -1
+  copy.style.cssText = 'background: transparent; border: 0; box-shadow: none; pointer-events: none'
+  face.replaceChildren(copy)
+}
+
+function animateFace(opening: boolean, currentOpacity = '0') {
+  faceAnimation?.cancel()
+  cancelAnimationFrame(faceFrame)
+  const face = compactFace.value!
+  // Keep the compact label at its original size while its surrounding circle morphs.
+  const sync = () => {
+    const shell = dialog.value?.querySelector<HTMLElement>('.expanded-bubble')
+    if (!shell) return
+    const matrix = new DOMMatrixReadOnly(getComputedStyle(shell).transform)
+    face.style.transform = `translate(-50%, -50%) scale(${1 / matrix.a}, ${1 / matrix.d})`
+    faceFrame = requestAnimationFrame(sync)
+  }
+  sync()
+  faceAnimation = face.animate([
+    { opacity: opening ? 1 : currentOpacity },
+    { opacity: opening ? 0 : 1 },
+  ], { duration: opening ? 300 : 240, easing: opening ? 'cubic-bezier(.4, 0, 1, 1)' : easing, fill: 'both' })
+}
+
+function stopFace() {
+  cancelAnimationFrame(faceFrame)
+  faceAnimation?.cancel()
+}
 
 function sourceElement(key = activeKey.value) {
   return [...document.querySelectorAll<HTMLElement>('.bubble-stage [data-bubble-id]')].find(element => element.dataset.bubbleId === key)
@@ -53,9 +95,12 @@ async function openGroup(key: string, origin?: DOMRect) {
   if (activeKey.value === key && (phase.value === 'opening' || phase.value === 'open')) return
   const ticket = ++version
   const source = origin ?? sourceElement(key)?.getBoundingClientRect()
+  const sourceNode = sourceElement(key)
   morph?.cancel()
+  stopFace()
   contentAnimations.forEach(animation => animation.cancel())
   activeKey.value = key
+  hiddenSource.value = key
   selectedTags.value = []
   phase.value = 'opening'
   await nextTick()
@@ -64,16 +109,19 @@ async function openGroup(key: string, origin?: DOMRect) {
   window.history.replaceState({}, '', window.location.pathname + window.location.search + '#' + key)
   const bubble = dialog.value.querySelector<HTMLElement>('.expanded-bubble')!
   const target = dialog.value.getBoundingClientRect()
+  prepareFace(sourceNode)
   if (!reducedMotion()) {
     morph = bubble.animate([
       { transform: source ? transformFrom(source, target) : 'scale(.96)' },
       { transform: 'none' },
     ], { duration: 620, easing, fill: 'both' })
+    animateFace(true)
     animateContent(true)
     await morph.finished.catch(() => {})
   }
   if (ticket !== version) return
   morph?.cancel()
+  stopFace()
   contentAnimations.forEach(animation => animation.cancel())
   phase.value = 'open'
 }
@@ -86,6 +134,7 @@ async function closeGroup() {
   const backdrop = getComputedStyle(dialog.value, '::backdrop').opacity
   const target = dialog.value.getBoundingClientRect()
   const destination = sourceElement()?.getBoundingClientRect()
+  const faceOpacity = compactFace.value ? getComputedStyle(compactFace.value).opacity : '0'
   morph?.cancel()
   dialog.value.style.setProperty('--backdrop-from', backdrop)
   phase.value = 'closing'
@@ -94,9 +143,14 @@ async function closeGroup() {
       { transform: current },
       { transform: destination ? transformFrom(destination, target) : 'scale(.96)' },
     ], { duration: 420, easing, fill: 'both' })
+    animateFace(false, faceOpacity)
     animateContent(false)
     await morph.finished.catch(() => {})
   }
+  if (ticket !== version) return
+  // Reveal the stationary source before removing the modal from the top layer.
+  hiddenSource.value = ''
+  await nextTick()
   if (ticket === version) dialog.value?.close()
 }
 
@@ -104,8 +158,10 @@ async function afterClose() {
   if (dialog.value?.open) return
   const source = sourceElement()?.querySelector<HTMLButtonElement>('button')
   morph?.cancel()
+  stopFace()
   contentAnimations.forEach(animation => animation.cancel())
   activeKey.value = ''
+  hiddenSource.value = ''
   phase.value = 'closed'
   selectedTags.value = []
   if (window.location.pathname.endsWith('/topics.html')) {
@@ -130,6 +186,7 @@ onMounted(() => {
 onUnmounted(() => {
   version++
   morph?.cancel()
+  stopFace()
   contentAnimations.forEach(animation => animation.cancel())
   dialog.value?.close()
   window.removeEventListener('hashchange', readHash)
@@ -139,9 +196,10 @@ onUnmounted(() => {
 <template>
   <section class="topics-page" aria-labelledby="topics-title">
     <div class="topics-header"><p id="topics-title" class="topics-intro">选择一个主题，按标签继续探索</p><span class="topics-count">{{ groups.length }} topics · {{ articles.length }} notes</span></div>
-    <BubbleField :items="topicBubbles" kind="topics" :paused="!!activeKey" :hidden-id="activeKey" @activate="openGroup" />
+    <BubbleField :items="topicBubbles" kind="topics" :paused="!!activeKey" :hidden-id="hiddenSource" @activate="openGroup" />
     <dialog ref="dialog" class="topic-dialog" :data-phase="phase" autofocus aria-labelledby="bubble-dialog-title" aria-describedby="bubble-dismiss-hint" @close="afterClose" @cancel.prevent="closeGroup()" @pointerdown="dismissOutside">
       <div v-if="active" class="expanded-bubble">
+        <div ref="compactFace" class="bubble-morph-face" aria-hidden="true" inert></div>
         <span id="bubble-dismiss-hint" class="visually-hidden">点击圆圈外或按 Escape 关闭</span>
         <div class="expanded-bubble-heading"><h2 id="bubble-dialog-title">{{ active.name }}</h2><p>{{ active.count }} 篇文章<span> · {{ selectedTags.length ? '匹配任一已选标签' : '选择标签，可多选' }}</span></p></div>
         <div class="tag-orbit" aria-label="选择标签" :inert="phase !== 'open'">
