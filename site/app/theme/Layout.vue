@@ -70,8 +70,9 @@ watch(activeHeading, async () => {
   if (!outline || !active) return
   const parent = outline.getBoundingClientRect()
   const child = active.getBoundingClientRect()
-  if (child.bottom > parent.bottom) outline.scrollTop += child.bottom - parent.bottom + 12
-  else if (child.top < parent.top) outline.scrollTop -= parent.top - child.top + 12
+  const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'
+  if (child.bottom > parent.bottom) outline.scrollBy({ top: child.bottom - parent.bottom + 12, behavior })
+  else if (child.top < parent.top) outline.scrollBy({ top: child.top - parent.top - 12, behavior })
 })
 </script>
 
