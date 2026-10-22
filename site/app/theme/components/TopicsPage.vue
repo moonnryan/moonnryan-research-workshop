@@ -10,10 +10,34 @@ const groups = computed(() => categories.map(([key, name]) => {
 const activeKey = ref('')
 const selectedTags = ref<string[]>([])
 const dialog = ref<HTMLDialogElement>()
+const phase = ref<'closed' | 'opening' | 'open' | 'closing'>('closed')
 const active = computed(() => groups.value.find(group => group.key === activeKey.value))
 const matchingCount = computed(() => active.value?.items.filter(article => !selectedTags.value.length || selectedTags.value.some(tag => article.tags.includes(tag))).length ?? 0)
 const topicBubbles = computed(() => groups.value.map(group => ({ id: group.key, label: group.name, count: group.count })))
 const tagBubbles = computed(() => active.value?.tags.map(([tag, count]) => ({ id: tag, label: tag, count, selected: selectedTags.value.includes(tag) })) ?? [])
+const easing = 'cubic-bezier(.16, 1, .3, 1)'
+let version = 0
+let morph: Animation | undefined
+let contentAnimations: Animation[] = []
+
+function sourceElement(key = activeKey.value) {
+  return [...document.querySelectorAll<HTMLElement>('.bubble-stage [data-bubble-id]')].find(element => element.dataset.bubbleId === key)
+}
+function transformFrom(source: DOMRect, target: DOMRect) {
+  return `translate(${source.left + source.width / 2 - target.left - target.width / 2}px, ${source.top + source.height / 2 - target.top - target.height / 2}px) scale(${source.width / target.width}, ${source.height / target.height})`
+}
+function reducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+function animateContent(opening: boolean) {
+  const elements = [...dialog.value!.querySelectorAll<HTMLElement>('.expanded-bubble-heading, .tag-orbit, .bubble-destination')]
+  const opacities = elements.map(element => getComputedStyle(element).opacity)
+  contentAnimations.forEach(animation => animation.cancel())
+  contentAnimations = elements.map((element, index) => element.animate([
+    { opacity: opening ? 0 : opacities[index], transform: opening ? 'translateY(10px)' : 'none' },
+    { opacity: opening ? 1 : 0, transform: opening ? 'none' : 'translateY(-5px)' },
+  ], { duration: opening ? 330 : 140, delay: opening ? 140 + index * 35 : 0, easing, fill: 'both' }))
+}
 
 function dismissOutside(event: PointerEvent) {
   const bubble = dialog.value?.querySelector<HTMLElement>('.expanded-bubble')
@@ -24,33 +48,77 @@ function dismissOutside(event: PointerEvent) {
   if (x * x + y * y > 1) closeGroup()
 }
 
-async function openGroup(key: string) {
+async function openGroup(key: string, origin?: DOMRect) {
   if (!groups.value.some(group => group.key === key)) return
+  if (activeKey.value === key && (phase.value === 'opening' || phase.value === 'open')) return
+  const ticket = ++version
+  const source = origin ?? sourceElement(key)?.getBoundingClientRect()
+  morph?.cancel()
+  contentAnimations.forEach(animation => animation.cancel())
   activeKey.value = key
   selectedTags.value = []
+  phase.value = 'opening'
   await nextTick()
-  if (!dialog.value?.open) dialog.value?.showModal()
+  if (ticket !== version || !dialog.value) return
+  if (!dialog.value.open) dialog.value.showModal()
   window.history.replaceState({}, '', window.location.pathname + window.location.search + '#' + key)
+  const bubble = dialog.value.querySelector<HTMLElement>('.expanded-bubble')!
+  const target = dialog.value.getBoundingClientRect()
+  if (!reducedMotion()) {
+    morph = bubble.animate([
+      { transform: source ? transformFrom(source, target) : 'scale(.96)' },
+      { transform: 'none' },
+    ], { duration: 620, easing, fill: 'both' })
+    animateContent(true)
+    await morph.finished.catch(() => {})
+  }
+  if (ticket !== version) return
+  morph?.cancel()
+  contentAnimations.forEach(animation => animation.cancel())
+  phase.value = 'open'
 }
 
-function closeGroup() {
-  dialog.value?.close()
+async function closeGroup() {
+  if (!dialog.value?.open || phase.value === 'closing') return
+  const ticket = ++version
+  const bubble = dialog.value.querySelector<HTMLElement>('.expanded-bubble')!
+  const current = getComputedStyle(bubble).transform
+  const backdrop = getComputedStyle(dialog.value, '::backdrop').opacity
+  const target = dialog.value.getBoundingClientRect()
+  const destination = sourceElement()?.getBoundingClientRect()
+  morph?.cancel()
+  dialog.value.style.setProperty('--backdrop-from', backdrop)
+  phase.value = 'closing'
+  if (!reducedMotion()) {
+    morph = bubble.animate([
+      { transform: current },
+      { transform: destination ? transformFrom(destination, target) : 'scale(.96)' },
+    ], { duration: 420, easing, fill: 'both' })
+    animateContent(false)
+    await morph.finished.catch(() => {})
+  }
+  if (ticket === version) dialog.value?.close()
 }
 
-function afterClose() {
-  // A queued close event may arrive after the user has already opened another topic.
+async function afterClose() {
   if (dialog.value?.open) return
+  const source = sourceElement()?.querySelector<HTMLButtonElement>('button')
+  morph?.cancel()
+  contentAnimations.forEach(animation => animation.cancel())
   activeKey.value = ''
+  phase.value = 'closed'
   selectedTags.value = []
   if (window.location.pathname.endsWith('/topics.html')) {
     window.history.replaceState({}, '', window.location.pathname + window.location.search)
+    await nextTick()
+    source?.focus({ preventScroll: true })
   }
 }
 
 function toggleTag(tag: string) {
+  if (phase.value !== 'open') return
   selectedTags.value = selectedTags.value.includes(tag) ? selectedTags.value.filter(item => item !== tag) : [...selectedTags.value, tag]
 }
-
 function readHash() {
   const key = normalizeTopic(decodeURIComponent(window.location.hash.slice(1)))
   if (key) openGroup(key)
@@ -60,6 +128,9 @@ onMounted(() => {
   window.addEventListener('hashchange', readHash)
 })
 onUnmounted(() => {
+  version++
+  morph?.cancel()
+  contentAnimations.forEach(animation => animation.cancel())
   dialog.value?.close()
   window.removeEventListener('hashchange', readHash)
 })
@@ -67,18 +138,17 @@ onUnmounted(() => {
 
 <template>
   <section class="topics-page" aria-labelledby="topics-title">
-    <div class="topics-header"><h1 id="topics-title">主题</h1><span class="topics-count">{{ groups.length }} topics · {{ articles.length }} notes</span></div>
-    <p class="topics-intro">选择一个主题，按标签继续探索</p>
-    <BubbleField :items="topicBubbles" kind="topics" :paused="!!activeKey" @activate="openGroup" />
-    <dialog ref="dialog" class="topic-dialog" tabindex="-1" autofocus aria-labelledby="bubble-dialog-title" aria-describedby="bubble-dismiss-hint" @close="afterClose" @pointerdown="dismissOutside">
+    <div class="topics-header"><p id="topics-title" class="topics-intro">选择一个主题，按标签继续探索</p><span class="topics-count">{{ groups.length }} topics · {{ articles.length }} notes</span></div>
+    <BubbleField :items="topicBubbles" kind="topics" :paused="!!activeKey" :hidden-id="activeKey" @activate="openGroup" />
+    <dialog ref="dialog" class="topic-dialog" :data-phase="phase" autofocus aria-labelledby="bubble-dialog-title" aria-describedby="bubble-dismiss-hint" @close="afterClose" @cancel.prevent="closeGroup()" @pointerdown="dismissOutside">
       <div v-if="active" class="expanded-bubble">
         <span id="bubble-dismiss-hint" class="visually-hidden">点击圆圈外或按 Escape 关闭</span>
         <div class="expanded-bubble-heading"><h2 id="bubble-dialog-title">{{ active.name }}</h2><p>{{ active.count }} 篇文章<span> · {{ selectedTags.length ? '匹配任一已选标签' : '选择标签，可多选' }}</span></p></div>
-        <div class="tag-orbit" aria-label="选择标签">
-          <BubbleField :items="tagBubbles" kind="tags" @activate="toggleTag" />
+        <div class="tag-orbit" aria-label="选择标签" :inert="phase !== 'open'">
+          <BubbleField :items="tagBubbles" kind="tags" :paused="phase !== 'open'" @activate="toggleTag" />
         </div>
-        <div class="bubble-destination">
-          <button v-if="selectedTags.length" class="bubble-clear" @click="selectedTags = []">清除 {{ selectedTags.length }} 个标签</button>
+        <div class="bubble-destination" :inert="phase !== 'open'">
+          <button class="bubble-clear" :class="{ 'is-empty': !selectedTags.length }" :disabled="!selectedTags.length" @click="selectedTags = []">清除 {{ selectedTags.length }} 个标签</button>
           <a class="topic-go-bubble" :href="filterUrl(active.key, selectedTags)"><span>前往 →</span><span>{{ matchingCount }} 篇文章</span></a>
         </div>
       </div>

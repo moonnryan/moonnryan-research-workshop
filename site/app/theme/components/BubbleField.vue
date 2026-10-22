@@ -3,8 +3,8 @@ import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { createBodies, settleBodies, stepBodies } from '../bubble-physics.mjs'
 
 export type BubbleItem = { id: string; label: string; count: number; selected?: boolean }
-const props = defineProps<{ items: BubbleItem[]; kind: 'topics' | 'tags'; paused?: boolean }>()
-const emit = defineEmits<{ activate: [id: string] }>()
+const props = defineProps<{ items: BubbleItem[]; kind: 'topics' | 'tags'; paused?: boolean; hiddenId?: string }>()
+const emit = defineEmits<{ activate: [id: string, origin: DOMRect | undefined] }>()
 const field = ref<HTMLElement>()
 const canvasHeight = ref(0)
 const nodes = new Map<string, HTMLElement>()
@@ -16,6 +16,12 @@ let visible = true
 let motion: MediaQueryList | undefined
 let mounted = false
 let centered = false
+let contentKey = ''
+
+function activate(id: string, event: MouseEvent) {
+  const origin = (event.currentTarget as HTMLElement).parentElement?.getBoundingClientRect()
+  emit('activate', id, origin)
+}
 
 function fallbackStyle(item: BubbleItem, index: number) {
   const anchors = [[22, 30], [49, 26], [76, 33], [34, 69], [68, 73]]
@@ -68,6 +74,8 @@ function hover(id: string, hovered: boolean) {
 function layout() {
   const element = field.value
   if (!element?.clientWidth) return
+  if (props.paused && bodies.length) return
+  const oldWidth = width, oldHeight = height
   width = element.clientWidth
   if (props.kind === 'tags') {
     const unit = width < 500 ? 24 : 26
@@ -83,12 +91,15 @@ function layout() {
     }
   } else height = element.clientHeight
   if (!height) return
+  const nextKey = JSON.stringify(props.items.map(item => [item.id, item.count]))
+  if (bodies.length && width === oldWidth && height === oldHeight && nextKey === contentKey) return
+  contentKey = nextKey
   bodies = createBodies(props.items, width, height, props.kind)
   settleBodies(bodies, width, height, props.kind === 'tags')
   draw(); resume()
 }
-watch(() => props.items.map(item => `${item.id}:${item.count}`).join('|'), async () => { await nextTick(); layout() })
-watch(() => props.paused, resume)
+watch(() => JSON.stringify(props.items.map(item => [item.id, item.count])), async () => { await nextTick(); layout() })
+watch(() => props.paused, paused => { if (!paused) layout(); resume() })
 onMounted(() => {
   mounted = true
   motion = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -112,8 +123,8 @@ onUnmounted(() => {
 
 <template>
   <div ref="field" :class="kind === 'topics' ? 'bubble-stage' : 'tag-cloud-canvas'" :style="kind === 'tags' ? { height: canvasHeight + 'px' } : undefined">
-    <div v-for="(item, index) in items" :key="item.id" :ref="element => setNode(item.id, element)" :data-bubble-id="item.id" :style="fallbackStyle(item, index)" :class="kind === 'topics' ? 'topic-bubble-position' : 'tag-bubble-position'">
-      <button :class="[kind === 'topics' ? 'topic-bubble' : 'tag-bubble', { selected: item.selected }]" :aria-label="`${kind === 'tags' ? '#' : ''}${item.label}，${item.count} 篇文章`" :aria-haspopup="kind === 'topics' ? 'dialog' : undefined" :aria-pressed="kind === 'tags' ? !!item.selected : undefined" @pointerenter="hover(item.id, true)" @pointerleave="hover(item.id, false)" @pointercancel="hover(item.id, false)" @focus="hover(item.id, true)" @blur="hover(item.id, false)" @click="emit('activate', item.id)">
+    <div v-for="(item, index) in items" :key="item.id" :ref="element => setNode(item.id, element)" :data-bubble-id="item.id" :style="fallbackStyle(item, index)" :class="[kind === 'topics' ? 'topic-bubble-position' : 'tag-bubble-position', { 'is-source-hidden': hiddenId === item.id }]">
+      <button :class="[kind === 'topics' ? 'topic-bubble' : 'tag-bubble', { selected: item.selected }]" :aria-label="`${kind === 'tags' ? '#' : ''}${item.label}，${item.count} 篇文章`" :aria-haspopup="kind === 'topics' ? 'dialog' : undefined" :aria-pressed="kind === 'tags' ? !!item.selected : undefined" @pointerenter="hover(item.id, true)" @pointerleave="hover(item.id, false)" @pointercancel="hover(item.id, false)" @focus="hover(item.id, true)" @blur="hover(item.id, false)" @click="activate(item.id, $event)">
         <span :class="kind === 'topics' ? 'bubble-name' : 'tag-bubble-label'">{{ kind === 'tags' ? '#' : '' }}{{ item.label }}</span>
         <span :class="kind === 'topics' ? 'bubble-count' : 'tag-bubble-count'">{{ item.selected ? '✓ ' : '' }}{{ item.count }}{{ kind === 'topics' ? ' notes' : '' }}</span>
         <span v-if="kind === 'topics'" class="bubble-open" aria-hidden="true">↗</span>
