@@ -116,7 +116,24 @@ watch(activeHeading, async () => {
         </aside>
         <RelatedArticles :url="route.path" />
       </div>
-      <div v-else-if="isAbout" class="about-layout"><div class="section-eyebrow">ABOUT THE WORKSHOP</div><Content class="vp-doc" /></div>
+      <div v-else-if="isAbout" class="about-layout">
+        <aside class="about-profile" aria-label="个人资料">
+          <img v-if="frontmatter.profile?.avatar" class="about-avatar" :src="withBase(frontmatter.profile.avatar)" :alt="frontmatter.profile.name || 'moonnryan'">
+          <div v-else class="about-monogram" aria-hidden="true"><span class="brand-mark"></span></div>
+          <p class="about-profile-name">{{ frontmatter.profile?.name || 'moonnryan' }}</p>
+          <p v-if="frontmatter.profile?.tagline" class="about-profile-tagline">{{ frontmatter.profile.tagline }}</p>
+          <nav v-if="frontmatter.profile?.links?.length" class="about-profile-links" aria-label="个人链接">
+            <a v-for="link in frontmatter.profile.links" :key="link.url" :href="link.url" :target="link.url.startsWith('https://') ? '_blank' : undefined" :rel="link.url.startsWith('https://') ? 'noreferrer' : undefined" :aria-label="link.label" :title="link.label">
+              <svg v-if="link.icon === 'github'" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .75a11.25 11.25 0 0 0-3.558 21.923c.563.104.768-.244.768-.542 0-.267-.01-.975-.015-1.913-3.13.68-3.791-1.508-3.791-1.508-.512-1.3-1.25-1.646-1.25-1.646-1.023-.7.078-.686.078-.686 1.132.08 1.727 1.162 1.727 1.162 1.006 1.724 2.64 1.226 3.283.938.102-.729.394-1.226.715-1.508-2.499-.284-5.126-1.25-5.126-5.56 0-1.228.44-2.232 1.16-3.019-.117-.285-.503-1.43.11-2.98 0 0 .945-.303 3.095 1.153A10.79 10.79 0 0 1 12 6.185c.956.005 1.918.13 2.817.379 2.148-1.456 3.091-1.153 3.091-1.153.614 1.55.228 2.695.112 2.98.722.787 1.158 1.791 1.158 3.019 0 4.322-2.631 5.273-5.138 5.552.404.35.765 1.04.765 2.096 0 1.513-.014 2.733-.014 3.104 0 .3.203.65.774.54A11.252 11.252 0 0 0 12 .75Z"/></svg>
+              <svg v-else-if="link.icon === 'orcid'" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#a6ce39"/><g fill="#fff"><circle cx="6.7" cy="6.5" r="1"/><path d="M5.9 9h1.6v9H5.9zM10 5.7h4.1c4.1 0 6.2 2.6 6.2 6.1 0 3.7-2.3 6.2-6.3 6.2h-4zm1.7 1.6v9.1H14c3 0 4.6-1.8 4.6-4.6 0-2.7-1.6-4.5-4.6-4.5z"/></g></svg>
+              <svg v-else-if="link.icon === 'email'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+              <span v-else>{{ link.label }} <span aria-hidden="true">↗</span></span>
+            </a>
+          </nav>
+          <a v-if="frontmatter.profile?.email" class="about-profile-email" :href="'mailto:' + frontmatter.profile.email">{{ frontmatter.profile.email }}</a>
+        </aside>
+        <div class="about-content"><div class="section-eyebrow">ABOUT ME</div><Content class="vp-doc" /></div>
+      </div>
       <Content v-else :key="page.relativePath" />
     </main>
 
